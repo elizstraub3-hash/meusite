@@ -585,6 +585,7 @@ function renderLista(){
                   <strong>${it.qty || 1}× ${it.nome || '—'}</strong>
                   <div class="item-detail">${it.variacao || '—'}</div>
                   ${it.arte ? `<div class="item-detail">Arte: ${it.arte}${(it.arteValor || 0) > 0 ? ' (+' + formatarMoeda(it.arteValor) + ')' : ''}</div>` : ''}
+                  ${it.infoEvento ? `<div class="item-detail" style="color:#60a5fa">Evento: ${it.infoEvento}</div>` : ''}
                 </div>
                 <div class="item-price">${it.orc ? 'Orç.' : formatarMoeda(((it.preco || 0) * (it.qty || 1)) + (it.arteValor || 0))}</div>
               </div>
