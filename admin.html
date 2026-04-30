@@ -520,9 +520,11 @@ function renderLista(){
   if(filtroAtivo !== 'todos') lista = lista.filter(p => p.status === filtroAtivo);
   if(buscaTermo){
     const t = buscaTermo.toLowerCase();
+    const tDigits = t.replace(/\D/g,'');
     lista = lista.filter(p =>
       p.cliente.nome.toLowerCase().includes(t) ||
       p.cliente.fone.toLowerCase().includes(t) ||
+      (tDigits && p.cliente.fone.replace(/\D/g,'').includes(tDigits)) ||
       p.id.toLowerCase().includes(t)
     );
   }
