@@ -177,6 +177,11 @@ footer{background:#0a0a0a;border-top:1px solid var(--border);padding:50px 4% 26p
 .lightbox-close{position:fixed;top:20px;right:20px;background:rgba(255,255,255,.15);border:none;color:#fff;width:44px;height:44px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:5510;backdrop-filter:blur(8px);transition:.2s}
 .lightbox-close:hover{background:rgba(255,255,255,.25)}
 .lightbox-close svg{width:20px;height:20px}
+.lb-nav{position:fixed;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:none;color:#fff;width:48px;height:48px;border-radius:50%;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:5510;backdrop-filter:blur(8px);transition:.2s}
+.lb-nav:hover{background:rgba(255,255,255,.3)}
+.lb-nav svg{width:22px;height:22px}
+.lb-prev{left:16px}
+.lb-next{right:74px}
 .lightbox-img{max-width:100%;height:auto;display:block;margin:auto;touch-action:pinch-zoom;-webkit-user-drag:none;user-select:none}
 @media(max-width:600px){
   .lightbox-close{top:14px;right:14px;width:38px;height:38px}
@@ -614,7 +619,9 @@ footer{background:#0a0a0a;border-top:1px solid var(--border);padding:50px 4% 26p
   <button class="lightbox-close" onclick="closeLightbox()" aria-label="Fechar">
     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
   </button>
+  <button class="lb-nav lb-prev" id="lbPrev" onclick="lbPrev()" aria-label="Imagem anterior"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg></button>
   <img class="lightbox-img" id="lightboxImg" src="" alt="">
+  <button class="lb-nav lb-next" id="lbNext" onclick="lbNext()" aria-label="Próxima imagem"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg></button>
 </div>
 
 <!-- ============ MODAL REGULAMENTO RESPONSABILIDADE ARTE ============ -->
@@ -984,13 +991,13 @@ function renderModal(){
   const p = currentProduct;
   let varsHTML = p.variacoes.map((v, vi) => {
     const sel = selectedVars[v.nome];
-    const selPrice = sel ? (sel.orc ? 'Orçamento' : 'R$ ' + sel.preco.toFixed(2).replace('.',',')) : '';
+    const selPrice = sel ? (sel.orc ? 'Orçamento' : sel.preco > 0 ? 'R$ ' + sel.preco.toFixed(2).replace('.',',') : '') : '';
     return `<div class="modal-section">${v.nome}</div>
     <div class="mdrop">
       <button class="mdrop-trigger" onclick="toggleMDrop(${vi})">
         <span class="label-left">
           <span class="lt">Selecionado</span>
-          <span class="lv">${sel.label}<span class="lvprice">— ${selPrice}</span></span>
+          <span class="lv">${sel.label}${selPrice ? `<span class="lvprice">— ${selPrice}</span>` : ''}</span>
         </span>
         <svg class="mdrop-arr" width="10" height="10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
       </button>
@@ -1175,21 +1182,39 @@ function atualizarGaleria(){
 // ============ LIGHTBOX (VISUALIZADOR DE IMAGEM SIMPLES) ============
 // Cliente clica na imagem → abre em tela cheia → pode dar pinça (mobile) ou ctrl+scroll (desktop) para zoom → ESC ou X fecha
 
+let _lbGaleria = [];
+let _lbIdx = 0;
+
 function openLightbox(src, nome){
-  document.getElementById('lightboxImg').src = src;
+  _lbGaleria = (currentProduct && currentProduct.galeria && currentProduct.galeria.length > 1)
+    ? currentProduct.galeria : [src];
+  _lbIdx = galeriaIdx || 0;
+  _renderLightbox();
   document.getElementById('lightbox').classList.add('show');
   document.body.classList.add('locked');
 }
+
+function _renderLightbox(){
+  document.getElementById('lightboxImg').src = _lbGaleria[_lbIdx] || _lbGaleria[0];
+  const show = _lbGaleria.length > 1 ? 'flex' : 'none';
+  document.getElementById('lbPrev').style.display = show;
+  document.getElementById('lbNext').style.display = show;
+}
+
+function lbPrev(){ _lbIdx = (_lbIdx - 1 + _lbGaleria.length) % _lbGaleria.length; _renderLightbox(); }
+function lbNext(){ _lbIdx = (_lbIdx + 1) % _lbGaleria.length; _renderLightbox(); }
 
 function closeLightbox(){
   document.getElementById('lightbox').classList.remove('show');
   document.body.classList.remove('locked');
 }
 
-// Tecla ESC fecha
+// Tecla ESC / setas fecha/navega lightbox
 document.addEventListener('keydown', e => {
-  if(e.key === 'Escape' && document.getElementById('lightbox').classList.contains('show')){
-    closeLightbox();
+  if(document.getElementById('lightbox').classList.contains('show')){
+    if(e.key === 'Escape') closeLightbox();
+    if(e.key === 'ArrowLeft') lbPrev();
+    if(e.key === 'ArrowRight') lbNext();
   }
 });
 
