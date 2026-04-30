@@ -541,19 +541,22 @@ function renderLista(){
   }
 
   orders.innerHTML = '<div class="order-list">' + lista.map(p => {
-    const st = STATUS[p.status] || STATUS.novo;
-    return `
+    try {
+      const st = STATUS[p.status] || STATUS.novo;
+      const cliente = p.cliente || {};
+      const itens = Array.isArray(p.itens) ? p.itens : [];
+      return `
     <div class="order" id="order-${p.id}">
       <div class="order-header" onclick="toggleOrder('${p.id}')">
         <div class="order-info">
           <div class="order-id">#${p.id}${p.origem ? `<span class="origem-badge ${ORIGENS[p.origem]?.class || ''}">${ORIGENS[p.origem]?.label || p.origem}</span>` : `<span class="origem-badge origem-site">Site</span>`}</div>
-          <div class="order-cliente">${p.cliente.nome}</div>
+          <div class="order-cliente">${cliente.nome || '—'}</div>
           <div class="order-meta">
-            <span>${p.cliente.fone}</span>
+            <span>${cliente.fone || '—'}</span>
             <span class="dot">·</span>
             <span>${formatarData(p.data)}</span>
             <span class="dot">·</span>
-            <span>${p.itens.length} ${p.itens.length === 1 ? 'item' : 'itens'}</span>
+            <span>${itens.length} ${itens.length === 1 ? 'item' : 'itens'}</span>
           </div>
         </div>
         <div class="order-right">
@@ -567,23 +570,23 @@ function renderLista(){
         <div class="body-section">
           <div class="body-label">Cliente</div>
           <div class="body-content">
-            <strong>${p.cliente.nome}</strong><br>
-            ${p.cliente.fone}<br>
-            ${p.cliente.endereco !== '—' ? p.cliente.endereco : '<span style="color:#666">Sem endereço cadastrado</span>'}
+            <strong>${cliente.nome || '—'}</strong><br>
+            ${cliente.fone || '—'}<br>
+            ${cliente.endereco && cliente.endereco !== '—' ? cliente.endereco : '<span style="color:#666">Sem endereço cadastrado</span>'}
           </div>
         </div>
 
         <div class="body-section">
           <div class="body-label">Itens do Pedido</div>
           <div class="itens-list">
-            ${p.itens.map(it => `
+            ${itens.map(it => `
               <div class="item-row">
                 <div class="item-info">
-                  <strong>${it.qty}× ${it.nome}</strong>
-                  <div class="item-detail">${it.variacao}</div>
-                  <div class="item-detail">Arte: ${it.arte}${it.arteValor > 0 ? ' (+' + formatarMoeda(it.arteValor) + ')' : ''}</div>
+                  <strong>${it.qty || 1}× ${it.nome || '—'}</strong>
+                  <div class="item-detail">${it.variacao || '—'}</div>
+                  ${it.arte ? `<div class="item-detail">Arte: ${it.arte}${(it.arteValor || 0) > 0 ? ' (+' + formatarMoeda(it.arteValor) + ')' : ''}</div>` : ''}
                 </div>
-                <div class="item-price">${it.orc ? 'Orç.' : formatarMoeda((it.preco * it.qty) + (it.arteValor || 0))}</div>
+                <div class="item-price">${it.orc ? 'Orç.' : formatarMoeda(((it.preco || 0) * (it.qty || 1)) + (it.arteValor || 0))}</div>
               </div>
             `).join('')}
           </div>
@@ -591,12 +594,12 @@ function renderLista(){
 
         <div class="body-section">
           <div class="body-label">Entrega</div>
-          <div class="body-content"><strong>${p.entrega}</strong></div>
+          <div class="body-content"><strong>${p.entrega || '—'}</strong></div>
         </div>
 
         <div class="body-section">
           <div class="body-label">Pagamento</div>
-          <div class="body-content"><strong>${p.pagamento}</strong></div>
+          <div class="body-content"><strong>${p.pagamento || '—'}</strong></div>
         </div>
 
         <div class="body-section">
@@ -628,6 +631,11 @@ function renderLista(){
         </div>
       </div>
     </div>`;
+    } catch(e) {
+      return `<div class="order" style="border-color:rgba(255,107,107,.4);padding:16px 18px">
+        <div style="color:#ff6b6b;font-size:12px;font-weight:600">⚠ Erro ao exibir pedido #${p?.id || '?'}: ${e.message}</div>
+      </div>`;
+    }
   }).join('') + '</div>';
 }
 
