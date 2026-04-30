@@ -1087,8 +1087,8 @@ function renderModal(){
         </div>
       </div>
       ${arteOpcao.id === 'criacao' && !isOrc ? (arteGratisAplicado
-        ? \`<p class="art-info art-free">Arte personalizada GRÁTIS — pedido acima de R$ 100,00</p>\`
-        : \`<p class="art-info">+R$ 35,90 pela criação. Pedidos acima de R$ 100,00 ganham arte grátis. <a onclick="openRegulamento()">Ver regulamento</a></p>\`
+        ? '<p class="art-info art-free">Arte personalizada GRÁTIS — pedido acima de R$ 100,00</p>'
+        : '<p class="art-info">+R$ 35,90 pela criação. Pedidos acima de R$ 100,00 ganham arte grátis. <a onclick="openRegulamento()">Ver regulamento</a></p>'
       ) : ''}
       <p class="art-info" style="border-left-color:#facc15;background:rgba(250,204,21,.05)">
         <strong>Atenção:</strong> A conferência da arte é responsabilidade do cliente. <a onclick="openRegResponsabilidade()">Ler termo de responsabilidade</a>
