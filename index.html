@@ -866,6 +866,16 @@ const produtos = [
 
 
 
+  {id:'sacola-offset', prazo:'5 a 7 dias úteis', cat:'impressao', thumb:'SACOLA', img:null,
+   nome:'Sacola Papel Offset 180g',
+   desc:'Sacola em papel offset 180g/m², dimensões 15 × 10 × 6 cm. Fundo branco com impressão colorida da logomarca na frente e estampa personalizada nas laterais. Importante: este produto não comporta cor chapa (cobertura total de fundo colorido) — a impressão é aplicada sobre o papel branco, garantindo melhor fixação da tinta, cores mais vivas e acabamento premium. Pedido mínimo: 50 unidades.',
+   precoBase:175.00,
+   variacoes:[{nome:'Quantidade', opcoes:[
+     {label:'50 unidades', preco:175.00},
+     {label:'100 unidades', preco:350.00},
+     {label:'150 unidades', preco:525.00},
+     {label:'200 unidades', preco:700.00}
+   ]}]},
 ];
 
 const ARTE_OPCOES = {
@@ -908,7 +918,7 @@ function makeCard(p){
 function renderCarousels(){
   const cats = {
     cdestaques: produtos.filter(p => ['cartao','convite-digital','banner'].includes(p.id)),
-    cimpressao: produtos.filter(p => ['panfleto','adesivos'].includes(p.id)),
+    cimpressao: produtos.filter(p => ['panfleto','adesivos','sacola-offset'].includes(p.id)),
     cpersonalizado: produtos.filter(p => p.cat === 'personalizado'),
     cinsumos: produtos.filter(p => p.cat === 'insumos'),
     cdigital: produtos.filter(p => p.cat === 'digital'),
