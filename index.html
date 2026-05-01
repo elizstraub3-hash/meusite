@@ -362,10 +362,9 @@ footer{background:#0a0a0a;border-top:1px solid var(--border);padding:50px 4% 26p
       <li><a href="#home">Início</a></li>
       <li><a href="#row-impressao">Impressão</a></li>
       <li><a href="#row-personalizado">Personalizado</a></li>
-      <li><a href="#row-textil">Têxtil</a></li>
-      <li><a href="#row-digital">Digital</a></li>
-      <li><a href="#row-maes">Dia das Mães</a></li>
-      <li><a href="#row-copa">Copa 2026</a></li>
+      <li><a href="#row-papelaria">Papelaria</a></li>
+      <li><a href="#row-insumos">Insumos</a></li>
+      <li><a href="#row-digital">Convites Digitais</a></li>
     </ul>
   </div>
   <div class="nav-right">
@@ -384,6 +383,7 @@ footer{background:#0a0a0a;border-top:1px solid var(--border);padding:50px 4% 26p
   <a href="#row-impressao" onclick="closeMenu()">Impressão</a>
   <a href="#row-personalizado" onclick="closeMenu()">Personalizado</a>
   <a href="#row-insumos" onclick="closeMenu()">Insumos</a>
+  <a href="#row-papelaria" onclick="closeMenu()">Papelaria</a>
   <a href="#row-digital" onclick="closeMenu()">Convites Digitais</a>
   <div class="mob-section">Especiais</div>
   <div class="mob-section">Contato</div>
@@ -484,6 +484,19 @@ footer{background:#0a0a0a;border-top:1px solid var(--border);padding:50px 4% 26p
 
 
 
+
+<section class="row" id="row-papelaria">
+  <div class="row-header">
+    <h2 class="row-title">Papelaria <span>Personalizada</span></h2>
+  </div>
+  <div class="carousel-wrap">
+    <button class="carousel-arrow left" onclick="scrollCarousel('cpapelaria',-1)"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg></button>
+    <div class="carousel" id="cpapelaria"></div>
+    <button class="carousel-arrow right" onclick="scrollCarousel('cpapelaria',1)"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg></button>
+  </div>
+</section>
+
+
 <!-- ============ COMO FUNCIONA ============ -->
 <section class="how" id="how">
   <h2 class="how-title">Como <span style="color:var(--blood-light);font-style:italic">Funciona</span></h2>
@@ -506,9 +519,8 @@ footer{background:#0a0a0a;border-top:1px solid var(--border);padding:50px 4% 26p
       <h4>Categorias</h4>
       <a href="#row-impressao">Impressão</a>
       <a href="#row-personalizado">Personalizado</a>
-      <a href="#row-textil">Têxtil</a>
+      <a href="#row-papelaria">Papelaria</a>
       <a href="#row-insumos">Insumos</a>
-      <a href="#row-design">Design</a>
       <a href="#row-digital">Convites Digitais</a>
     </div>
     <div class="foot-col">
@@ -888,6 +900,13 @@ const produtos = [
      {label:'80 unidades', preco:800.00},
      {label:'100 unidades', preco:1000.00}
    ]}]},
+  {id:'topo-bolo', prazo:'1 dia útil', cat:'papelaria', thumb:'TOPO', img:null, badge:'NOVO',
+   nome:'Topo de Bolo Personalizado',
+   desc:'Papel 180g recortado na silhueta da sua arte. Campanha com até 5 peças recortadas com encaixe para o bolo. Ideal para aniversários, casamentos e comemorações especiais.',
+   precoBase:'R$ 20,00',
+   variacoes:[{nome:'Conjunto', opcoes:[
+     {label:'Kit até 5 peças', preco:20.00}
+   ]}]},
 ];
 
 const ARTE_OPCOES = {
@@ -896,7 +915,7 @@ const ARTE_OPCOES = {
 };
 
 function getCatLabel(cat){
-  return cat==='impressao'?'Impressão':cat==='personalizado'?'Personalizado':cat==='design'?'Design':cat==='textil'?'Têxtil':cat==='insumos'?'Insumos':cat==='digital'?'Digital':cat==='maes'?'Dia das Mães':cat==='copa'?'Copa 2026':cat;
+  return cat==='impressao'?'Impressão':cat==='personalizado'?'Personalizado':cat==='papelaria'?'Papelaria':cat==='design'?'Design':cat==='textil'?'Têxtil':cat==='insumos'?'Insumos':cat==='digital'?'Digital':cat==='maes'?'Dia das Mães':cat==='copa'?'Copa 2026':cat;
 }
 
 // ============ RENDER CARDS ============
@@ -934,6 +953,7 @@ function renderCarousels(){
     cpersonalizado: produtos.filter(p => p.cat === 'personalizado'),
     cinsumos: produtos.filter(p => p.cat === 'insumos'),
     cdigital: produtos.filter(p => p.cat === 'digital'),
+    cpapelaria: produtos.filter(p => p.cat === 'papelaria'),
   };
   Object.entries(cats).forEach(([id, list]) => {
     const el = document.getElementById(id);
@@ -941,6 +961,30 @@ function renderCarousels(){
   });
 }
 renderCarousels();
+
+// Sincroniza catálogo com o painel admin via localStorage
+(function sincronizarCatalogo(){
+  try {
+    const cat = produtos.map(p => {
+      const catLabel = {impressao:'Impressão',personalizado:'Personalizado',digital:'Digital',insumos:'Insumos'}[p.cat] || p.cat;
+      let vars = [];
+      if(p.precosTabela){
+        Object.keys(p.precosTabela).forEach(tam => {
+          p.precosTabela[tam].forEach(q => vars.push({label: tam + ' · ' + q.label, preco: q.preco}));
+        });
+      } else {
+        (p.variacoes||[]).forEach(v => {
+          (v.opcoes||[]).forEach(o => {
+            const lbl = p.variacoes.length > 1 ? v.nome+': '+o.label : o.label;
+            vars.push({label: lbl, preco: o.preco||0, orc: o.orc||false});
+          });
+        });
+      }
+      return {id: p.id, nome: p.nome, cat: catLabel, variacoes: vars};
+    });
+    localStorage.setItem('ph_catalogo', JSON.stringify(cat));
+  } catch(e){}
+})();
 
 // ============ HERO SLIDER ============
 let curHero = 0;
