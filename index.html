@@ -1700,6 +1700,41 @@ document.addEventListener('click', e => {
 });
 
 updateCartUI();
+
+// ============ BUSCA ============
+function openSearch(){
+  document.getElementById('searchOverlay').classList.add('show');
+  setTimeout(()=>document.getElementById('searchInput').focus(),50);
+  document.body.classList.add('locked');
+}
+function closeSearch(){
+  document.getElementById('searchOverlay').classList.remove('show');
+  document.getElementById('searchInput').value = '';
+  document.getElementById('searchResults').innerHTML = '';
+  document.getElementById('searchLabel').textContent = '';
+  document.body.classList.remove('locked');
+}
+function doSearch(q){
+  const term = q.toLowerCase().trim();
+  const label = document.getElementById('searchLabel');
+  const results = document.getElementById('searchResults');
+  if(!term){ results.innerHTML = ''; label.textContent = ''; return; }
+  const found = produtos.filter(p =>
+    p.nome.toLowerCase().includes(term) ||
+    (p.desc && p.desc.toLowerCase().includes(term)) ||
+    getCatLabel(p.cat).toLowerCase().includes(term)
+  );
+  label.textContent = found.length + ' resultado' + (found.length !== 1 ? 's' : '') + ' para "' + q + '"';
+  if(found.length){
+    results.innerHTML = '<div class="search-grid">' + found.map(makeCard).join('') + '</div>';
+  } else {
+    results.innerHTML = '<p class="search-empty">Nenhum produto encontrado para "' + q + '"</p>';
+  }
+}
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape' && document.getElementById('searchOverlay').classList.contains('show')) closeSearch();
+});
+
 </script>
 
 
