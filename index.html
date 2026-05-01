@@ -963,6 +963,14 @@ const produtos = [
    variacoes:[{nome:'Conjunto', opcoes:[
      {label:'Kit até 5 peças', preco:20.00}
    ]}]},
+  {id:'totem', prazo:'5 a 7 dias úteis', cat:'personalizado', thumb:'TOTEM', img:null, badge:'NOVO',
+   nome:'Totem Personalizado',
+   desc:'Display em formato totem com impressão em alta definição na sua arte. Ideal para eventos, lojas, feiras e fachadas. Escolha o material conforme o ambiente e a duração de uso desejada.',
+   precoBase:'R$ 130,00',
+   variacoes:[{nome:'Material', opcoes:[
+     {label:'Isopor com Adesivo Vinil — 1,20 m', preco:130.00},
+     {label:'Estrutura Rígida Completa — 1,20 m', preco:235.00}
+   ]}]},
 ];
 
 const ARTE_OPCOES = {
@@ -1775,40 +1783,40 @@ document.addEventListener('keydown', e => {
 </div>
 
 <!-- ============ REG ARTE DO CLIENTE ============ -->
-<div class="overlay" id="regArteClienteOverlay" onclick="if(event.target===this)closeRegArteCliente()">
-  <div class="overlay-box" style="max-width:640px">
-    <button class="overlay-close" onclick="closeRegArteCliente()">✕</button>
+<div class="reg-overlay" id="regArteClienteOverlay" onclick="if(event.target===this)closeRegArteCliente()">
+  <div class="reg-modal">
+    <button class="modal-close" onclick="closeRegArteCliente()" aria-label="Fechar"><svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg></button>
     <h3>Arte do Cliente — Regulamento</h3>
-    <p>Prezamos pela qualidade de cada pedido. Leia atentamente as diretrizes abaixo antes de enviar sua arte.</p>
+    <p>Prezamos pela qualidade de cada impressão. Leia com atenção antes de enviar sua arte para produção.</p>
 
     <h4>Responsabilidade pela Arte</h4>
-    <p>Ao enviar um arquivo para impressão, o cliente declara que <strong>conferiu e aprovou</strong> todo o conteúdo: textos, números, imagens, cores e dados pessoais. A Print House <strong>não se responsabiliza</strong> por erros presentes na arte enviada após a aprovação.</p>
+    <p>Ao enviar um arquivo para impressão, o cliente declara que <strong>conferiu e aprovou</strong> todo o conteúdo: textos, números, imagens, cores e dados. A Print House <strong>não se responsabiliza</strong> por erros presentes na arte após a aprovação do cliente.</p>
 
-    <h4>⚠️ Imagens Geradas por Inteligência Artificial (IA)</h4>
-    <p><strong>Não nos responsabilizamos por artes geradas por ferramentas de IA</strong> (ex.: ChatGPT, Midjourney, Canva IA, Adobe Firefly, etc.). Essas ferramentas podem produzir:</p>
+    <h4>⚠ Artes Geradas por Inteligência Artificial</h4>
+    <p><strong>Não nos responsabilizamos por artes criadas por ferramentas de IA</strong> (ex.: ChatGPT, Midjourney, Canva IA, Adobe Firefly, entre outras). Essas ferramentas frequentemente produzem:</p>
     <ul>
-      <li>Erros ortográficos e gramaticais em textos</li>
-      <li>Nomes escritos de forma incorreta</li>
-      <li>Datas, números e dados distorcidos</li>
+      <li>Erros ortográficos e gramaticais nos textos</li>
+      <li>Nomes e palavras escritos de forma incorreta</li>
+      <li>Datas, números e informações distorcidas</li>
       <li>Rostos e elementos visuais com imperfeições</li>
-      <li>Baixa resolução imprópria para impressão</li>
+      <li>Resolução insuficiente para impressão profissional</li>
     </ul>
-    <p>Se optar por usar IA, <strong>revise rigorosamente</strong> todo o conteúdo gerado antes de enviar.</p>
+    <p>Caso utilize IA na criação, <strong>revise rigorosamente cada detalhe</strong> antes de enviar. A responsabilidade pelo conteúdo é inteiramente do cliente.</p>
 
-    <h4>Especificações Técnicas</h4>
+    <h4>Especificações Técnicas Recomendadas</h4>
     <ul>
       <li>Resolução mínima: <strong>300 DPI</strong> no tamanho final de impressão</li>
       <li>Formatos aceitos: PDF, AI, CDR, PNG (alta resolução), JPG</li>
-      <li>Sangria recomendada: <strong>3 mm</strong> em todos os lados</li>
-      <li>Textos convertidos em curvas/contornos</li>
-      <li>Cores em modo <strong>CMYK</strong> para melhor fidelidade na impressão</li>
+      <li>Sangria: <strong>3 mm</strong> em todos os lados</li>
+      <li>Textos convertidos em curvas ou contornos</li>
+      <li>Cores preferencialmente em modo <strong>CMYK</strong></li>
     </ul>
 
     <h4>Após a Aprovação</h4>
     <p>Uma vez aprovada a arte e iniciada a produção, <strong>não é possível cancelar ou alterar o pedido</strong>. Em caso de dúvida, entre em contato pelo WhatsApp <strong>antes</strong> de aprovar.</p>
 
     <p style="margin-top:18px;padding:12px;background:rgba(255,255,255,.05);border-left:3px solid var(--blood);border-radius:0 6px 6px 0;font-size:13px">
-      <strong>Ao enviar sua arte para produção, o cliente confirma estar ciente e de acordo com este regulamento.</strong>
+      <strong>Ao enviar sua arte ou aprovar um arquivo para impressão, o cliente confirma estar ciente e de acordo com este regulamento.</strong>
     </p>
   </div>
 </div>
