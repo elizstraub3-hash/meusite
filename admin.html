@@ -804,7 +804,6 @@ const _CATALOGO_FALLBACK = [
     {label:'Festa Infantil', preco:95.90},{label:'Aniversário Adulto', preco:95.90},{label:'Festa de 15 Anos', preco:95.90},{label:'Casamento', preco:95.90},{label:'Bodas', preco:95.90},{label:'Chá de Bebê', preco:95.90},{label:'Chá Revelação', preco:95.90},{label:'Casamento Civil', preco:95.90},{label:'Formatura', preco:95.90},{label:'Outro tema (especificar)', preco:95.90}]},
   {id:'ferros', nome:'Ferros de Wind Banner', cat:'Insumos', variacoes:[
     {label:'Reto', preco:55.90},{label:'Curvo', preco:55.90},{label:'Pena', preco:55.90},{label:'Gota', preco:55.90}]},
-  {id:'personalizado', nome:'Produto Personalizado (digite)', cat:'Outro', variacoes:[]},
   {id:'chaveiro-abridor', nome:'Chaveiro Abridor Gravação a Laser', cat:'Gravação a Laser', variacoes:[
     {label:'10 unidades', preco:25.00},{label:'20 unidades', preco:50.00},{label:'50 unidades', preco:125.00},{label:'100 unidades', preco:250.00},{label:'250 unidades', preco:625.00}]},
   {id:'vetorizacao', nome:'Vetorização de Imagens', cat:'Digital', variacoes:[
@@ -817,8 +816,11 @@ const _CATALOGO_FALLBACK = [
     {label:'1 Post Elaborado (Feed + Stories)', preco:35.00},{label:'Pack 4 Posts Elaborados', preco:100.00},{label:'1 Post + Reels Animado com Música', preco:75.00}]},
   {id:'criacao-logo', nome:'Criação de Logo Exclusiva', cat:'Digital', variacoes:[
     {label:'Logo Exclusiva', preco:150.00}]},
-  {id:'post-reels', nome:'Post + Reels Elaborado', cat:'Digital', variacoes:[
-    {label:'Post Feed + Reels Stories', preco:75.00}]}
+  {id:'topo-bolo', nome:'Topo de Bolo Personalizado', cat:'Papelaria', variacoes:[
+    {label:'Kit até 5 peças', preco:20.00}]},
+  {id:'camisa', nome:'Camisa Personalizada', cat:'Personalizado', variacoes:[
+    {label:'Somente Frente (até 10 cm)', preco:39.90},
+    {label:'Frente e Verso (frente até 10 cm + costas até 30 cm)', preco:49.99}]}
 ];
 
 function _carregarCatalogo(){
@@ -827,9 +829,6 @@ function _carregarCatalogo(){
     if(stored){
       const cat = JSON.parse(stored);
       if(Array.isArray(cat) && cat.length > 0){
-        // Adiciona o item genérico se não existir
-        if(!cat.find(p => p.id === 'personalizado'))
-          cat.push({id:'personalizado', nome:'Produto Personalizado (digite)', cat:'Outro', variacoes:[]});
         return cat;
       }
     }
