@@ -143,6 +143,7 @@ header.adm{background:#0a0a0a;border-bottom:1px solid var(--border);padding:14px
 .s-pronto{background:rgba(74,222,128,.15);color:#4ade80;border:1px solid rgba(74,222,128,.3)}
 .s-entregue{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.3)}
 .s-cancelado{background:rgba(255,107,107,.15);color:#ff6b6b;border:1px solid rgba(255,107,107,.3)}
+.s-aguardando{background:rgba(251,146,60,.15);color:#fb923c;border:1px solid rgba(251,146,60,.3)}
 .toggle-arrow{transition:.2s;color:#888}
 .order.expanded .toggle-arrow{transform:rotate(180deg)}
 
@@ -338,6 +339,7 @@ header.adm{background:#0a0a0a;border-bottom:1px solid var(--border);padding:14px
         <span class="np-label">Status Inicial</span>
         <select class="np-select" id="npStatus">
           <option value="novo">Novo</option>
+          <option value="aguardando">Aguardando Pagamento</option>
           <option value="confirmado">Confirmado</option>
           <option value="producao">Em Produção</option>
           <option value="pronto">Pronto</option>
@@ -381,6 +383,7 @@ const ADMIN_PASS = 'eliza2026';
 
 const STATUS = {
   novo: {label:'Novo', class:'s-novo'},
+  aguardando: {label:'Aguardando Pagamento', class:'s-aguardando'},
   confirmado: {label:'Confirmado', class:'s-confirmado'},
   producao: {label:'Produção', class:'s-producao'},
   pronto: {label:'Pronto', class:'s-pronto'},
@@ -498,6 +501,7 @@ function renderFiltros(){
     producao: pedidos.filter(p => p.status === 'producao').length,
     pronto: pedidos.filter(p => p.status === 'pronto').length,
     entregue: pedidos.filter(p => p.status === 'entregue').length,
+    aguardando: pedidos.filter(p => p.status === 'aguardando').length,
     cancelado: pedidos.filter(p => p.status === 'cancelado').length
   };
 
@@ -665,6 +669,8 @@ function closeStatusModal(){
 
 // Mensagens automáticas por status
 const MENSAGENS_STATUS = {
+  aguardando: (p) => `Olá ${p.cliente.nome}! 👋\n\nRecebemos seu pedido *#${p.id}* na Print House! 🎉\n\n*Resumo do pedido:*\n${p.itens.map(it => `▪️ ${it.qty}× ${it.nome} (${it.variacao})`).join('\n')}\n\n*Total:* ${p.hasOrc && p.total === 0 ? 'Sob orçamento' : formatarMoeda(p.total)}\n*Pagamento:* ${p.pagamento}\n\n⏳ Estamos *aguardando a confirmação do pagamento* para iniciar a produção.\n\nAssim que confirmarmos, você receberá uma nova mensagem. Qualquer dúvida, é só chamar aqui! 😊`,
+
   confirmado: (p) => `Olá ${p.cliente.nome}! Tudo bem?\n\nSeu pedido *#${p.id}* foi *CONFIRMADO* na Print House! ✓\n\n*Resumo:*\n${p.itens.map(it => `• ${it.qty}× ${it.nome} (${it.variacao})`).join('\n')}\n\n*Total:* ${p.hasOrc && p.total === 0 ? 'Sob orçamento' : formatarMoeda(p.total)}\n*Entrega:* ${p.entrega}\n*Pagamento:* ${p.pagamento}\n\nJá iniciamos os procedimentos do seu pedido. Qualquer dúvida estamos aqui!`,
 
   producao: (p) => `Olá ${p.cliente.nome}!\n\nBoas notícias! Seu pedido *#${p.id}* entrou em *PRODUÇÃO* agora. 🎨\n\nEm breve te aviso quando estiver pronto. Obrigada pela confiança!`,
