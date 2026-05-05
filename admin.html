@@ -337,7 +337,9 @@ header.adm{background:#0a0a0a;border-bottom:1px solid var(--border);padding:14px
     <div class="adm-logo">PRINT HOUSE<span>ADMIN PANEL</span></div>
     <div class="adm-actions">
       <button onclick="abrirNovoPedido()" class="primary">+ Novo Pedido</button>
-      <button onclick="exportarPedidos()" title="Exportar">Exportar</button>
+      <button onclick="exportarPedidos()" title="Exportar">⬇ Exportar</button>
+      <button onclick="document.getElementById('importFileInput').click()" title="Importar pedidos de arquivo JSON">⬆ Importar</button>
+      <input type="file" id="importFileInput" accept=".json" style="display:none" onchange="importarPedidos(this)">
       <button onclick="logout()" class="danger">Sair</button>
     </div>
   </header>
@@ -1712,6 +1714,103 @@ function exportarPedidos(){
   a.click();
   URL.revokeObjectURL(url);
   showToast('Pedidos exportados');
+}
+
+// ============ IMPORTAR ============
+function importarPedidos(input){
+  const file = input.files[0];
+  if(!file){ return; }
+  input.value = ''; // reset so same file can be re-imported
+  const reader = new FileReader();
+  reader.onload = function(e){
+    let dados;
+    try { dados = JSON.parse(e.target.result); } catch(err){
+      showToast('Arquivo inválido — não é um JSON válido');
+      return;
+    }
+    if(!Array.isArray(dados) || dados.length === 0){
+      showToast('Arquivo não contém pedidos');
+      return;
+    }
+    // Validate basic structure: each item must have at least id and itens
+    const validos = dados.filter(p => p && p.id && Array.isArray(p.itens));
+    if(validos.length === 0){
+      showToast('Nenhum pedido válido encontrado no arquivo');
+      return;
+    }
+    abrirModalImport(validos);
+  };
+  reader.readAsText(file, 'UTF-8');
+}
+
+function abrirModalImport(novos){
+  const existentes = pedidos.length;
+  const novosIds = new Set(novos.map(p => p.id));
+  const duplicatas = pedidos.filter(p => novosIds.has(p.id)).length;
+  const ineditos = novos.length - duplicatas;
+
+  const overlay = document.createElement('div');
+  overlay.id = 'importModal';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;display:flex;align-items:center;justify-content:center';
+  overlay.innerHTML = `
+    <div style="background:#1a1a2e;border:1px solid #333;border-radius:12px;padding:28px;max-width:420px;width:90%;color:#e0e0e0">
+      <h3 style="margin:0 0 12px;color:#fff;font-size:1.1rem">📥 Importar Pedidos</h3>
+      <p style="margin:0 0 8px;font-size:.93rem">Arquivo contém <strong style="color:#e50914">${novos.length} pedidos</strong>.</p>
+      <ul style="margin:0 0 18px;padding-left:18px;font-size:.88rem;color:#aaa;line-height:1.7">
+        <li>Pedidos atuais no painel: <strong style="color:#fff">${existentes}</strong></li>
+        <li>Pedidos novos (sem conflito): <strong style="color:#4caf50">${ineditos}</strong></li>
+        <li>IDs já existentes no painel: <strong style="color:#ff9800">${duplicatas}</strong></li>
+      </ul>
+      <p style="margin:0 0 20px;font-size:.88rem;color:#aaa">Como deseja importar?</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button onclick="confirmarImport('merge')" style="flex:1;padding:10px;background:#333;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:.9rem">
+          🔀 Mesclar<br><small style="color:#aaa;font-size:.75rem">Adiciona novos, mantém existentes</small>
+        </button>
+        <button onclick="confirmarImport('sobrescrever')" style="flex:1;padding:10px;background:#7b1fa2;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:.9rem">
+          ♻️ Substituir duplicatas<br><small style="color:#ddd;font-size:.75rem">Atualiza IDs repetidos com os do arquivo</small>
+        </button>
+        <button onclick="confirmarImport('tudo')" style="flex:1;padding:10px;background:#b71c1c;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:.9rem">
+          🗑 Substituir tudo<br><small style="color:#ddd;font-size:.75rem">Apaga painel atual e usa o arquivo</small>
+        </button>
+      </div>
+      <div style="margin-top:16px;text-align:right">
+        <button onclick="fecharModalImport()" style="padding:8px 18px;background:#222;color:#aaa;border:1px solid #444;border-radius:8px;cursor:pointer">Cancelar</button>
+      </div>
+    </div>`;
+  overlay._dadosImport = novos;
+  document.body.appendChild(overlay);
+}
+
+function fecharModalImport(){
+  const m = document.getElementById('importModal');
+  if(m) m.remove();
+}
+
+function confirmarImport(modo){
+  const overlay = document.getElementById('importModal');
+  if(!overlay) return;
+  const novos = overlay._dadosImport || [];
+  fecharModalImport();
+
+  if(modo === 'tudo'){
+    pedidos = novos;
+  } else if(modo === 'sobrescrever'){
+    const idsNovos = new Set(novos.map(p => p.id));
+    pedidos = pedidos.filter(p => !idsNovos.has(p.id)).concat(novos);
+  } else { // merge — só adiciona os que não existem
+    const idsExistentes = new Set(pedidos.map(p => p.id));
+    const paraAdicionar = novos.filter(p => !idsExistentes.has(p.id));
+    pedidos = pedidos.concat(paraAdicionar);
+    showToast(`${paraAdicionar.length} pedido(s) adicionado(s)`);
+  }
+
+  // Ordenar por data decrescente
+  pedidos.sort((a,b) => new Date(b.data||0) - new Date(a.data||0));
+  salvarPedidos();
+  render();
+  if(_abaAtiva === 'dashboard') renderDashboard();
+  else setAba('pedidos');
+  if(modo !== 'merge') showToast(`Importação concluída — ${novos.length} pedidos`);
 }
 
 // ============ TOAST ============
