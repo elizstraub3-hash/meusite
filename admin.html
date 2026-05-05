@@ -246,7 +246,7 @@ header.adm{background:#0a0a0a;border-bottom:1px solid var(--border);padding:14px
 <div class="modal-bg" id="novoPedidoBg" onclick="if(event.target===this)fecharNovoPedido()">
   <div class="np-modal">
     <div class="np-header">
-      <div class="np-title">Novo Pedido</div>
+      <div class="np-title" id="npModalTitle">Novo Pedido</div>
       <button class="cart-close" onclick="fecharNovoPedido()" aria-label="Fechar"><svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg></button>
     </div>
 
@@ -356,7 +356,7 @@ header.adm{background:#0a0a0a;border-bottom:1px solid var(--border);padding:14px
 
     <div class="np-actions">
       <button class="np-btn cancel" onclick="fecharNovoPedido()">Cancelar</button>
-      <button class="np-btn save" onclick="salvarNovoPedido()">Salvar Pedido</button>
+      <button class="np-btn save" id="npSaveBtn" onclick="salvarNovoPedido()">Salvar Pedido</button>
     </div>
   </div>
 </div>
@@ -618,6 +618,10 @@ function renderLista(){
         </div>` : ''}
 
         <div class="actions-row">
+          <button class="act-btn" onclick="abrirEditarPedido('${p.id}')">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+            Editar
+          </button>
           <button class="act-btn" onclick="abrirStatusModal('${p.id}')">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
             Alterar Status
@@ -734,6 +738,8 @@ function deletarPedido(id){
 // ============ NOVO PEDIDO MANUAL ============
 let npItensList = [];
 let npOrigemSel = null;
+let npModoEdicao = false;
+let npPedidoEditandoId = null;
 
 const ORIGENS = {
   'instagram': {label:'Instagram', class:'origem-instagram'},
@@ -758,6 +764,10 @@ function abrirNovoPedido(){
   document.getElementById('npObs').value = '';
   document.querySelectorAll('.np-origin-btn').forEach(b => b.classList.remove('sel'));
 
+  // Reset título e botão para "Novo Pedido"
+  document.getElementById('npModalTitle').textContent = 'Novo Pedido';
+  document.getElementById('npSaveBtn').textContent = 'Salvar Pedido';
+
   // Adiciona um item vazio inicial
   adicionarItem();
 
@@ -766,6 +776,54 @@ function abrirNovoPedido(){
 
 function fecharNovoPedido(){
   document.getElementById('novoPedidoBg').classList.remove('show');
+  npModoEdicao = false;
+  npPedidoEditandoId = null;
+}
+
+function abrirEditarPedido(id){
+  const p = pedidos.find(p => p.id === id);
+  if(!p) return;
+
+  npModoEdicao = true;
+  npPedidoEditandoId = id;
+
+  // Título e botão
+  document.getElementById('npModalTitle').textContent = 'Editar Pedido #' + id;
+  document.getElementById('npSaveBtn').textContent = 'Salvar Alterações';
+
+  // Pré-preencher dados do cliente
+  document.getElementById('npNome').value = p.cliente.nome || '';
+  document.getElementById('npFone').value = p.cliente.fone || '';
+  document.getElementById('npEnd').value = (p.cliente.endereco && p.cliente.endereco !== '—') ? p.cliente.endereco : '';
+  document.getElementById('npEntrega').value = p.entrega || '';
+  document.getElementById('npPagamento').value = p.pagamento || '';
+  document.getElementById('npStatus').value = p.status || 'novo';
+  document.getElementById('npObs').value = p.observacoes || '';
+
+  // Origem
+  npOrigemSel = p.origem || 'site';
+  document.querySelectorAll('.np-origin-btn').forEach(b => {
+    b.classList.toggle('sel', b.dataset.origem === npOrigemSel);
+  });
+
+  // Converter itens do pedido para formato npItensList
+  npItensList = (p.itens || []).map(it => {
+    const prod = CATALOGO_PRODUTOS.find(cp => cp.nome === it.nome);
+    const varMatch = prod ? prod.variacoes.find(v => v.label === it.variacao) : null;
+    return {
+      produtoId: prod ? prod.id : '',
+      nome: it.nome,
+      variacao: it.variacao || '',
+      qty: it.qty || 1,
+      valor: it.preco || 0,
+      custom: !prod
+    };
+  });
+
+  if(npItensList.length === 0) npItensList.push({produtoId:'',nome:'',variacao:'',qty:1,valor:0,custom:false});
+
+  renderItens();
+  document.getElementById('novoPedidoBg').classList.add('show');
 }
 
 function selOrigem(origem){
@@ -1000,11 +1058,39 @@ function salvarNovoPedido(){
     manual: true
   };
 
-  pedidos.unshift(novoPedido);
-  salvarPedidos();
-  render();
-  fecharNovoPedido();
-  showToast('Pedido criado!');
+  if(npModoEdicao && npPedidoEditandoId){
+    // Editar pedido existente
+    const idx = pedidos.findIndex(p => p.id === npPedidoEditandoId);
+    if(idx !== -1){
+      pedidos[idx].cliente = { nome, fone, endereco: endereco || '—' };
+      pedidos[idx].itens = itensValidos.map(it => ({
+        nome: it.nome,
+        variacao: it.variacao || 'Padrão',
+        qty: it.qty,
+        arte: it.arte || '—',
+        arteValor: it.arteValor || 0,
+        preco: it.valor,
+        orc: it.valor === 0
+      }));
+      pedidos[idx].entrega = entrega || pedidos[idx].entrega;
+      pedidos[idx].pagamento = pagamento || pedidos[idx].pagamento;
+      pedidos[idx].status = status;
+      pedidos[idx].observacoes = obs;
+      pedidos[idx].total = total;
+      pedidos[idx].hasOrc = itensValidos.some(i => i.valor === 0);
+      if(npOrigemSel) pedidos[idx].origem = npOrigemSel;
+    }
+    salvarPedidos();
+    render();
+    fecharNovoPedido();
+    showToast('Pedido atualizado!');
+  } else {
+    pedidos.unshift(novoPedido);
+    salvarPedidos();
+    render();
+    fecharNovoPedido();
+    showToast('Pedido criado!');
+  }
 }
 
 // ============ EXPORTAR ============
