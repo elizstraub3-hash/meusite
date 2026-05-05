@@ -223,6 +223,17 @@ header.adm{background:#0a0a0a;border-bottom:1px solid var(--border);padding:14px
 .andamento-nome{font-size:13px;font-weight:600;color:#fff;flex:1}
 .andamento-status{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:4px}
 
+/* ── item checklist ── */
+.item-check-btn{width:28px;height:28px;border-radius:6px;border:1.5px solid #333;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;color:#555}
+.item-check-btn:hover{border-color:#4ade80;color:#4ade80}
+.item-check-btn.feito{background:#4ade80;border-color:#4ade80;color:#000}
+.item-row{display:flex;align-items:flex-start;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a1a1a;gap:10px}
+.item-row.feito .item-info strong{text-decoration:line-through;color:#555}
+.item-row.feito .item-info .item-detail{color:#3a3a3a;text-decoration:line-through}
+.item-row.feito .item-price{color:#3a3a3a}
+.itens-progress{font-size:10px;color:#555;margin-bottom:8px;letter-spacing:.5px}
+.itens-progress span{color:#4ade80;font-weight:700}
+
 /* ============ CLIENTES ============ */
 .cli-body{padding:24px 4% 60px}
 .cli-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;gap:12px;flex-wrap:wrap}
@@ -699,7 +710,7 @@ function renderLista(){
             <span class="dot">·</span>
             <span>${formatarData(p.data)}</span>
             <span class="dot">·</span>
-            <span>${itens.length} ${itens.length === 1 ? 'item' : 'itens'}</span>
+            <span>${itens.length} ${itens.length === 1 ? 'item' : 'itens'}${itens.some(it=>it.feito) ? ` · <span style="color:#4ade80">${itens.filter(it=>it.feito).length} feito${itens.filter(it=>it.feito).length!==1?'s':''}</span>` : ''}</span>
           </div>
         </div>
         <div class="order-right">
@@ -722,17 +733,24 @@ function renderLista(){
         <div class="body-section">
           <div class="body-label">Itens do Pedido</div>
           <div class="itens-list">
-            ${itens.map(it => `
-              <div class="item-row">
-                <div class="item-info">
+            ${(() => {
+              const feitos = itens.filter(it => it.feito).length;
+              const prog = itens.length > 0 ? `<div class="itens-progress"><span>${feitos}/${itens.length}</span> itens concluídos</div>` : '';
+              const rows = itens.map((it, ii) => `
+              <div class="item-row${it.feito ? ' feito' : ''}" id="irow-${p.id}-${ii}">
+                <button class="item-check-btn${it.feito ? ' feito' : ''}" onclick="toggleItemFeito('${p.id}',${ii})" title="${it.feito ? 'Marcar como pendente' : 'Marcar como feito'}">
+                  <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                </button>
+                <div class="item-info" style="flex:1">
                   <strong>${it.qty || 1}× ${it.nome || '—'}</strong>
                   <div class="item-detail">${it.variacao || '—'}</div>
                   ${it.arte ? `<div class="item-detail">Arte: ${it.arte}${(it.arteValor || 0) > 0 ? ' (+' + formatarMoeda(it.arteValor) + ')' : ''}</div>` : ''}
                   ${it.infoEvento ? `<div class="item-detail" style="color:#60a5fa">Evento: ${it.infoEvento}</div>` : ''}
                 </div>
                 <div class="item-price">${it.orc ? 'Orç.' : formatarMoeda(((it.preco || 0) * (it.qty || 1)) + (it.arteValor || 0))}</div>
-              </div>
-            `).join('')}
+              </div>`).join('');
+              return prog + rows;
+            })()}
           </div>
         </div>
 
@@ -966,6 +984,32 @@ function contatarClienteId(id){
 // ============ AÇÕES ============
 function toggleOrder(id){
   document.getElementById('order-' + id).classList.toggle('expanded');
+}
+
+function toggleItemFeito(pedidoId, itemIdx){
+  const p = pedidos.find(p => p.id === pedidoId);
+  if(!p || !p.itens[itemIdx]) return;
+  p.itens[itemIdx].feito = !p.itens[itemIdx].feito;
+  salvarPedidos();
+
+  // Update DOM without full re-render
+  const row = document.getElementById('irow-' + pedidoId + '-' + itemIdx);
+  if(row){
+    const btn = row.querySelector('.item-check-btn');
+    const feito = p.itens[itemIdx].feito;
+    row.classList.toggle('feito', feito);
+    btn.classList.toggle('feito', feito);
+    btn.title = feito ? 'Marcar como pendente' : 'Marcar como feito';
+  }
+
+  // Update progress counter
+  const itens = p.itens;
+  const done = itens.filter(i => i.feito).length;
+  const progEl = row?.closest('.itens-list')?.querySelector('.itens-progress span');
+  if(progEl) progEl.textContent = done + '/' + itens.length;
+
+  // Also refresh dashboard if visible
+  if(_abaAtiva === 'dashboard') renderDashboard();
 }
 
 function abrirStatusModal(id){
