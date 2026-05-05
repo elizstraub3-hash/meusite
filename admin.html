@@ -184,16 +184,80 @@ header.adm{background:#0a0a0a;border-bottom:1px solid var(--border);padding:14px
 .toast.show{transform:translateX(-50%) translateY(0)}
 .toast svg{width:15px;height:15px}
 
+/* ============ TABS ============ */
+.admin-tabs{background:#0d0d0d;border-bottom:1px solid var(--border);display:flex;gap:0;padding:0 4%;position:sticky;top:56px;z-index:40}
+.admin-tab{background:none;border:none;color:#777;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;padding:14px 20px;border-bottom:2px solid transparent;transition:.2s;letter-spacing:.5px;display:flex;align-items:center;gap:7px;white-space:nowrap}
+.admin-tab svg{width:14px;height:14px}
+.admin-tab:hover{color:#fff}
+.admin-tab.active{color:#fff;border-bottom-color:#e50914}
+.admin-section{display:none}
+.admin-section.visible{display:block}
+
+/* ============ DASHBOARD ============ */
+.dash-body{padding:24px 4% 60px}
+.dash-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:30px}
+.dash-card{background:#111;border:1px solid var(--border);border-radius:10px;padding:20px;position:relative;overflow:hidden}
+.dash-card::before{content:'';position:absolute;inset:0;background:var(--accent,transparent);opacity:.04;pointer-events:none}
+.dash-card-lbl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#666;margin-bottom:8px}
+.dash-card-val{font-family:'Bebas Neue',sans-serif;font-size:34px;letter-spacing:1px;line-height:1;color:#fff}
+.dash-card-sub{font-size:11px;color:#555;margin-top:6px}
+.dash-card.red{--accent:#e50914;border-color:rgba(229,9,20,.25)}.dash-card.red .dash-card-val{color:#ff6b6b}
+.dash-card.orange{--accent:#fb923c;border-color:rgba(251,146,60,.25)}.dash-card.orange .dash-card-val{color:#fb923c}
+.dash-card.green{--accent:#4ade80;border-color:rgba(74,222,128,.2)}.dash-card.green .dash-card-val{color:#4ade80}
+.dash-card.blue{--accent:#60a5fa;border-color:rgba(96,165,250,.2)}.dash-card.blue .dash-card-val{color:#60a5fa}
+.dash-section-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:#fff;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.dash-section-title span{font-family:inherit;font-size:11px;letter-spacing:1.5px;color:#666;font-weight:400}
+.dash-section{margin-bottom:32px}
+.dash-empty{color:#555;font-size:13px;padding:16px 0}
+.debtor-row{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#111;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;gap:10px;flex-wrap:wrap}
+.debtor-row.atrasado{border-color:rgba(229,9,20,.3)}
+.debtor-info{flex:1;min-width:140px}
+.debtor-nome{font-size:13px;font-weight:600;color:#fff}
+.debtor-meta{font-size:11px;color:#666;margin-top:2px}
+.debtor-val{font-family:'Bebas Neue',sans-serif;font-size:18px;color:#ff6b6b;white-space:nowrap}
+.debtor-actions{display:flex;gap:6px}
+.debtor-btn{padding:6px 12px;border-radius:5px;border:1px solid var(--border);background:transparent;color:#bbb;font-size:10px;font-family:inherit;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:.2s}
+.debtor-btn.wpp{background:#25d366;border-color:#25d366;color:#fff}
+.andamento-row{display:flex;align-items:center;gap:12px;padding:10px 14px;background:#111;border:1px solid var(--border);border-radius:8px;margin-bottom:7px;flex-wrap:wrap}
+.andamento-id{font-size:11px;color:#666;min-width:80px}
+.andamento-nome{font-size:13px;font-weight:600;color:#fff;flex:1}
+.andamento-status{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:4px}
+
+/* ============ CLIENTES ============ */
+.cli-body{padding:24px 4% 60px}
+.cli-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;gap:12px;flex-wrap:wrap}
+.cli-search{flex:1;max-width:360px;background:#111;border:1px solid var(--border);color:#fff;padding:10px 14px;border-radius:7px;font-family:inherit;font-size:13px}
+.cli-search:focus{outline:none;border-color:#fff}
+.cli-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.cli-card{background:#111;border:1px solid var(--border);border-radius:10px;padding:18px}
+.cli-card-name{font-size:15px;font-weight:700;color:#fff;margin-bottom:4px}
+.cli-card-fone{font-size:12px;color:#60a5fa}
+.cli-card-meta{font-size:11px;color:#555;margin-top:6px;line-height:1.6}
+.cli-desconto{display:inline-block;margin-top:8px;padding:3px 10px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);border-radius:4px;font-size:10px;font-weight:700;color:#4ade80;letter-spacing:.5px}
+.cli-card-actions{display:flex;gap:7px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+.cli-btn{flex:1;padding:8px;border:1px solid var(--border);background:transparent;color:#bbb;border-radius:6px;font-size:10px;font-family:inherit;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:.2s;text-transform:uppercase}
+.cli-btn:hover{border-color:#fff;color:#fff}
+.cli-btn.danger:hover{border-color:#ff6b6b;color:#ff6b6b}
+.cli-empty{color:#555;font-size:14px;text-align:center;padding:60px 0}
+.cli-modal{background:#181818;border-radius:12px;max-width:480px;width:100%;padding:0;border:1px solid var(--border)}
+.cli-modal-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.cli-modal-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px}
+.cli-modal-body{padding:20px 24px}
+.cli-modal-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end}
+.desconto-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
 /* ============ RESPONSIVE ============ */
 @media(max-width:600px){
   header.adm{padding:14px 16px}
-  .stats-row,.filters,.orders{padding-left:16px;padding-right:16px}
+  .stats-row,.filters,.orders,.dash-body,.cli-body{padding-left:16px;padding-right:16px}
   .order-header{flex-direction:column;align-items:flex-start}
   .order-right{width:100%;justify-content:space-between}
   .stat-val{font-size:24px}
   .search-box{margin-left:0;width:100%;max-width:none}
   .filters{flex-direction:column;align-items:stretch}
   .filters > .filter-btn{justify-content:center}
+  .admin-tab{padding:12px 10px;font-size:11px}
+  .dash-cards{grid-template-columns:1fr 1fr}
 }
 </style>
 </head>
@@ -219,26 +283,55 @@ header.adm{background:#0a0a0a;border-bottom:1px solid var(--border);padding:14px
   </div>
 </div>
 
-<!-- ============ APP / DASHBOARD ============ -->
+<!-- ============ APP ============ -->
 <div class="app" id="app">
 
   <header class="adm">
     <div class="adm-logo">PRINT HOUSE<span>ADMIN PANEL</span></div>
     <div class="adm-actions">
       <button onclick="abrirNovoPedido()" class="primary">+ Novo Pedido</button>
-      <button onclick="exportarPedidos()" title="Exportar pedidos em formato JSON">Exportar</button>
+      <button onclick="exportarPedidos()" title="Exportar">Exportar</button>
       <button onclick="logout()" class="danger">Sair</button>
     </div>
   </header>
 
-  <!-- ESTATÍSTICAS -->
-  <div class="stats-row" id="statsRow"></div>
+  <nav class="admin-tabs">
+    <button class="admin-tab active" id="tab-dashboard" onclick="setAba('dashboard')">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+      Dashboard
+    </button>
+    <button class="admin-tab" id="tab-pedidos" onclick="setAba('pedidos')">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+      Pedidos
+    </button>
+    <button class="admin-tab" id="tab-clientes" onclick="setAba('clientes')">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      Clientes
+    </button>
+  </nav>
 
-  <!-- FILTROS -->
-  <div class="filters" id="filters"></div>
+  <div class="admin-section" id="sectionDashboard">
+    <div class="dash-body">
+      <div class="dash-cards" id="dashCards"></div>
+      <div id="dashConteudo"></div>
+    </div>
+  </div>
 
-  <!-- LISTA DE PEDIDOS -->
-  <div class="orders" id="ordersList"></div>
+  <div class="admin-section" id="sectionPedidos">
+    <div class="stats-row" id="statsRow"></div>
+    <div class="filters" id="filters"></div>
+    <div class="orders" id="ordersList"></div>
+  </div>
+
+  <div class="admin-section" id="sectionClientes">
+    <div class="cli-body">
+      <div class="cli-topbar">
+        <input class="cli-search" id="cliSearch" type="text" placeholder="Buscar por nome ou telefone..." oninput="renderClientes()">
+        <button onclick="abrirNovoCliente()" style="padding:10px 18px;border-radius:7px;background:#fff;color:#000;border:none;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.5px">+ Novo Cliente</button>
+      </div>
+      <div class="cli-grid" id="cliGrid"></div>
+    </div>
+  </div>
 
 </div>
 
@@ -361,6 +454,51 @@ header.adm{background:#0a0a0a;border-bottom:1px solid var(--border);padding:14px
   </div>
 </div>
 
+<!-- ============ MODAL CLIENTE ============ -->
+<div class="modal-bg" id="cliModalBg" onclick="if(event.target===this)fecharModalCliente()">
+  <div class="cli-modal">
+    <div class="cli-modal-header">
+      <div class="cli-modal-title" id="cliModalTitle">Novo Cliente</div>
+      <button class="cart-close" onclick="fecharModalCliente()"><svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg></button>
+    </div>
+    <div class="cli-modal-body">
+      <div class="np-section">
+        <span class="np-label">Nome *</span>
+        <input type="text" class="np-input" id="cliNome" placeholder="Nome completo">
+      </div>
+      <div class="np-section">
+        <div class="np-row">
+          <div><span class="np-label">WhatsApp *</span><input type="tel" class="np-input" id="cliFone" placeholder="(41) 99999-9999"></div>
+          <div><span class="np-label">Cidade</span><input type="text" class="np-input" id="cliCidade" placeholder="Colombo, Curitiba..."></div>
+        </div>
+      </div>
+      <div class="np-section">
+        <span class="np-label">Endereço</span>
+        <input type="text" class="np-input" id="cliEnd" placeholder="Rua, número, bairro">
+      </div>
+      <div class="np-section">
+        <span class="np-label">Desconto especial</span>
+        <div class="desconto-row">
+          <select class="np-select" id="cliDescontoTipo" onchange="document.getElementById('cliDescontoVal').style.display=this.value?'block':'none'">
+            <option value="">Sem desconto</option>
+            <option value="percent">Porcentagem (%)</option>
+            <option value="fixo">Valor fixo (R$)</option>
+          </select>
+          <input type="number" class="np-input" id="cliDescontoVal" placeholder="0" min="0" step="0.01" style="display:none">
+        </div>
+      </div>
+      <div class="np-section">
+        <span class="np-label">Observações internas</span>
+        <textarea class="np-textarea" id="cliObs" placeholder="Cliente VIP, preferências, histórico..."></textarea>
+      </div>
+    </div>
+    <div class="cli-modal-footer">
+      <button class="np-btn cancel" onclick="fecharModalCliente()">Cancelar</button>
+      <button class="np-btn save" onclick="salvarCliente()">Salvar Cliente</button>
+    </div>
+  </div>
+</div>
+
 <!-- ============ MODAL ALTERAR STATUS ============ -->
 <div class="modal-bg" id="statusModalBg" onclick="if(event.target===this)closeStatusModal()">
   <div class="modal-card">
@@ -443,8 +581,9 @@ if(sessionStorage.getItem('ph_admin_logged') === '1'){
 
 // ============ CARREGAR / SALVAR ============
 function carregarPedidos(){
-  pedidos = JSON.parse(localStorage.getItem('ph_pedidos') || '[]');
-  render();
+  try { pedidos = JSON.parse(localStorage.getItem('ph_pedidos') || '[]'); } catch(e){ pedidos = []; }
+  carregarClientes();
+  setAba('dashboard');
 }
 
 function salvarPedidos(){
@@ -646,6 +785,182 @@ function renderLista(){
       </div>`;
     }
   }).join('') + '</div>';
+}
+
+// ============ ABAS ============
+let _abaAtiva = 'dashboard';
+function setAba(aba){
+  _abaAtiva = aba;
+  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('visible'));
+  const btn = document.getElementById('tab-' + aba);
+  const sec = document.getElementById('section' + aba.charAt(0).toUpperCase() + aba.slice(1));
+  if(btn) btn.classList.add('active');
+  if(sec) sec.classList.add('visible');
+  if(aba === 'dashboard') renderDashboard();
+  if(aba === 'clientes') renderClientes();
+  if(aba === 'pedidos') render();
+}
+
+// ============ DASHBOARD ============
+function renderDashboard(){
+  const agora = new Date();
+  const devendo = pedidos.filter(p => p.status === 'aguardando');
+  const andamento = pedidos.filter(p => ['confirmado','producao','pronto'].includes(p.status));
+  const faturadoMes = pedidos
+    .filter(p => { const d=new Date(p.data); return d.getMonth()===agora.getMonth()&&d.getFullYear()===agora.getFullYear()&&p.status!=='cancelado'; })
+    .reduce((s,p) => s+(p.total||0), 0);
+  const totalDevendo = devendo.reduce((s,p) => s+(p.total||0), 0);
+
+  document.getElementById('dashCards').innerHTML = `
+    <div class="dash-card red">
+      <div class="dash-card-lbl">Aguardando Pagamento</div>
+      <div class="dash-card-val">${devendo.length}</div>
+      <div class="dash-card-sub">Em aberto: ${formatarMoeda(totalDevendo)}</div>
+    </div>
+    <div class="dash-card orange">
+      <div class="dash-card-lbl">Em Andamento</div>
+      <div class="dash-card-val">${andamento.length}</div>
+      <div class="dash-card-sub">Confirmado · Produção · Pronto</div>
+    </div>
+    <div class="dash-card green">
+      <div class="dash-card-lbl">Faturamento do Mês</div>
+      <div class="dash-card-val">${formatarMoeda(faturadoMes)}</div>
+      <div class="dash-card-sub">${agora.toLocaleString('pt-BR',{month:'long',year:'numeric'})}</div>
+    </div>
+    <div class="dash-card blue">
+      <div class="dash-card-lbl">Clientes</div>
+      <div class="dash-card-val">${clientes.length}</div>
+      <div class="dash-card-sub">Total de pedidos: ${pedidos.length}</div>
+    </div>`;
+
+  let html = `<div class="dash-section">
+    <div class="dash-section-title">🔴 Aguardando Pagamento <span>(${devendo.length})</span></div>`;
+  if(!devendo.length){
+    html += `<div class="dash-empty">Nenhum pedido aguardando pagamento ✅</div>`;
+  } else {
+    devendo.sort((a,b)=>new Date(a.data)-new Date(b.data)).forEach(p => {
+      const fone=(p.cliente.fone||'').replace(/\D/g,'');
+      const dias=Math.floor((Date.now()-new Date(p.data))/(864e5));
+      html+=`<div class="debtor-row${dias>=2?' atrasado':''}">
+        <div class="debtor-info">
+          <div class="debtor-nome">${p.cliente.nome||'—'} <span style="color:#555;font-size:10px">#${p.id}</span></div>
+          <div class="debtor-meta">${p.cliente.fone||'—'} · ${dias===0?'hoje':dias===1?'ontem':dias+' dias atrás'} · ${p.pagamento||'—'}</div>
+        </div>
+        <div class="debtor-val">${formatarMoeda(p.total||0)}</div>
+        <div class="debtor-actions">
+          <button class="debtor-btn wpp" onclick="enviarMensagemStatus('${p.id}','aguardando')" title="Cobrar">
+            <svg width="11" height="11" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347M12 21.785A9.78 9.78 0 1112 2.22a9.78 9.78 0 010 19.566z"/></svg>
+            Cobrar
+          </button>
+          <button class="debtor-btn" onclick="setAba('pedidos');setTimeout(()=>{const el=document.getElementById('order-${p.id}');if(el){el.scrollIntoView({behavior:'smooth'});el.classList.add('expanded');}},200)">Ver</button>
+        </div>
+      </div>`;
+    });
+  }
+  html += `</div><div class="dash-section">
+    <div class="dash-section-title">🟡 Em Andamento <span>(${andamento.length})</span></div>`;
+  if(!andamento.length){
+    html += `<div class="dash-empty">Nenhum pedido em andamento.</div>`;
+  } else {
+    andamento.sort((a,b)=>new Date(a.data)-new Date(b.data)).forEach(p => {
+      const st=STATUS[p.status]||STATUS.novo;
+      html+=`<div class="andamento-row">
+        <div class="andamento-id">#${p.id}</div>
+        <div class="andamento-nome">${p.cliente.nome||'—'}</div>
+        <div class="andamento-status ${st.class}">${st.label}</div>
+        <div style="font-family:'Bebas Neue';font-size:15px">${formatarMoeda(p.total||0)}</div>
+        <button class="debtor-btn" onclick="setAba('pedidos');setTimeout(()=>{const el=document.getElementById('order-${p.id}');if(el){el.scrollIntoView({behavior:'smooth'});el.classList.add('expanded');}},200)">Ver</button>
+      </div>`;
+    });
+  }
+  html += '</div>';
+  document.getElementById('dashConteudo').innerHTML = html;
+}
+
+// ============ CLIENTES ============
+let clientes = [];
+function carregarClientes(){ try{ clientes=JSON.parse(localStorage.getItem('ph_clientes')||'[]'); }catch(e){ clientes=[]; } }
+function salvarClientes(){ localStorage.setItem('ph_clientes', JSON.stringify(clientes)); }
+
+function renderClientes(){
+  const termo=(document.getElementById('cliSearch')?.value||'').toLowerCase().trim();
+  const grid=document.getElementById('cliGrid');
+  let lista=clientes;
+  if(termo) lista=lista.filter(c=>c.nome.toLowerCase().includes(termo)||(c.fone||'').includes(termo));
+  if(!lista.length){
+    grid.innerHTML=`<div class="cli-empty" style="grid-column:1/-1">${!clientes.length?'Nenhum cliente cadastrado.<br><small style="color:#444">Clique em "+ Novo Cliente" para começar.</small>':'Nenhum cliente encontrado para "'+termo+'".'}</div>`;
+    return;
+  }
+  grid.innerHTML=lista.map(c=>{
+    const peds=pedidos.filter(p=>p.cliente.fone&&p.cliente.fone.replace(/\D/g,'')===(c.fone||'').replace(/\D/g,''));
+    const gasto=peds.filter(p=>p.status!=='cancelado').reduce((s,p)=>s+(p.total||0),0);
+    const descLabel=c.descontoTipo==='percent'?c.descontoVal+'% de desconto':c.descontoTipo==='fixo'?'Desconto R$ '+(c.descontoVal||0).toFixed(2).replace('.',','):'';
+    return `<div class="cli-card">
+      <div class="cli-card-name">${c.nome}</div>
+      ${c.fone?`<div class="cli-card-fone">${c.fone}</div>`:''}
+      <div class="cli-card-meta">${c.cidade?c.cidade+'<br>':''}${c.endereco?c.endereco+'<br>':''}${peds.length} pedido${peds.length!==1?'s':''} · ${formatarMoeda(gasto)}${c.obs?'<br><em style="color:#555">'+c.obs+'</em>':''}</div>
+      ${descLabel?`<div class="cli-desconto">🏷️ ${descLabel}</div>`:''}
+      <div class="cli-card-actions">
+        ${c.fone?`<button class="cli-btn" style="background:#25d366;border-color:#25d366;color:#fff" onclick="contatarClienteId('${c.id}')">WhatsApp</button>`:''}
+        <button class="cli-btn" onclick="editarCliente('${c.id}')">Editar</button>
+        <button class="cli-btn danger" onclick="excluirCliente('${c.id}')">Excluir</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+let _cliEditandoId=null;
+function abrirNovoCliente(){
+  _cliEditandoId=null;
+  document.getElementById('cliModalTitle').textContent='Novo Cliente';
+  ['cliNome','cliFone','cliCidade','cliEnd','cliObs'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('cliDescontoTipo').value='';
+  document.getElementById('cliDescontoVal').value='';
+  document.getElementById('cliDescontoVal').style.display='none';
+  document.getElementById('cliModalBg').classList.add('show');
+}
+function editarCliente(id){
+  const c=clientes.find(c=>c.id===id); if(!c) return;
+  _cliEditandoId=id;
+  document.getElementById('cliModalTitle').textContent='Editar Cliente';
+  document.getElementById('cliNome').value=c.nome||'';
+  document.getElementById('cliFone').value=c.fone||'';
+  document.getElementById('cliCidade').value=c.cidade||'';
+  document.getElementById('cliEnd').value=c.endereco||'';
+  document.getElementById('cliDescontoTipo').value=c.descontoTipo||'';
+  document.getElementById('cliDescontoVal').value=c.descontoVal||'';
+  document.getElementById('cliDescontoVal').style.display=c.descontoTipo?'block':'none';
+  document.getElementById('cliObs').value=c.obs||'';
+  document.getElementById('cliModalBg').classList.add('show');
+}
+function fecharModalCliente(){ document.getElementById('cliModalBg').classList.remove('show'); }
+function salvarCliente(){
+  const nome=document.getElementById('cliNome').value.trim();
+  if(!nome){ showToast('Informe o nome do cliente'); return; }
+  const cli={
+    id: _cliEditandoId||('CLI'+Date.now()),
+    nome, fone: document.getElementById('cliFone').value.trim(),
+    cidade: document.getElementById('cliCidade').value.trim(),
+    endereco: document.getElementById('cliEnd').value.trim(),
+    descontoTipo: document.getElementById('cliDescontoTipo').value||'',
+    descontoVal: parseFloat(document.getElementById('cliDescontoVal').value)||0,
+    obs: document.getElementById('cliObs').value.trim(),
+    data: _cliEditandoId?(clientes.find(c=>c.id===_cliEditandoId)?.data||new Date().toISOString()):new Date().toISOString()
+  };
+  if(_cliEditandoId){ const i=clientes.findIndex(c=>c.id===_cliEditandoId); if(i!==-1) clientes[i]=cli; }
+  else clientes.unshift(cli);
+  salvarClientes(); fecharModalCliente(); renderClientes();
+  showToast(_cliEditandoId?'Cliente atualizado!':'Cliente cadastrado!');
+}
+function excluirCliente(id){
+  if(!confirm('Excluir cliente?')) return;
+  clientes=clientes.filter(c=>c.id!==id); salvarClientes(); renderClientes(); showToast('Cliente removido');
+}
+function contatarClienteId(id){
+  const c=clientes.find(c=>c.id===id); if(!c||!c.fone) return;
+  const f=c.fone.replace(/\D/g,''); const ff=(f.length===11||f.length===10)?'55'+f:f;
+  window.open('https://wa.me/'+ff+'?text='+encodeURIComponent('Olá '+c.nome+'! '),'_blank');
 }
 
 // ============ AÇÕES ============
