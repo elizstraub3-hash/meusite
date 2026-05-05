@@ -223,6 +223,42 @@ header.adm{background:#0a0a0a;border-bottom:1px solid var(--border);padding:14px
 .andamento-nome{font-size:13px;font-weight:600;color:#fff;flex:1}
 .andamento-status{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:4px}
 
+/* ── autocomplete ── */
+.np-autocomplete{position:relative}
+.np-ac-list{position:absolute;top:100%;left:0;right:0;background:#1a1a1a;border:1px solid #333;border-radius:0 0 8px 8px;z-index:200;max-height:200px;overflow-y:auto;display:none}
+.np-ac-list.show{display:block}
+.np-ac-item{padding:10px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid #222;transition:.15s}
+.np-ac-item:hover{background:#252525}
+.np-ac-item strong{color:#fff;display:block}
+.np-ac-item span{color:#666;font-size:11px}
+
+/* ── estoque ── */
+.est-body{padding:24px 4% 60px}
+.est-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;gap:12px;flex-wrap:wrap}
+.est-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:24px}
+.est-card{background:#111;border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center}
+.est-card-val{font-family:'Bebas Neue',sans-serif;font-size:28px}
+.est-card-lbl{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#555;margin-top:4px}
+.est-table{width:100%;border-collapse:collapse}
+.est-table th{text-align:left;padding:8px 12px;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#555;border-bottom:1px solid var(--border);font-weight:600}
+.est-table td{padding:12px;border-bottom:1px solid #1a1a1a;font-size:13px;vertical-align:middle}
+.est-table tr:hover td{background:#111}
+.est-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.5px}
+.est-badge.ok{background:rgba(74,222,128,.1);color:#4ade80;border:1px solid rgba(74,222,128,.25)}
+.est-badge.low{background:rgba(251,146,60,.1);color:#fb923c;border:1px solid rgba(251,146,60,.3)}
+.est-badge.out{background:rgba(229,9,20,.1);color:#ff6b6b;border:1px solid rgba(229,9,20,.25)}
+.est-margin{font-family:'Bebas Neue';font-size:16px}
+.est-margin.high{color:#4ade80}
+.est-margin.mid{color:#facc15}
+.est-margin.low{color:#fb923c}
+.est-act-btn{padding:5px 10px;border:1px solid var(--border);background:transparent;color:#888;border-radius:5px;font-size:10px;font-family:inherit;font-weight:700;cursor:pointer;transition:.2s;letter-spacing:.5px;text-transform:uppercase}
+.est-act-btn:hover{border-color:#fff;color:#fff}
+.est-act-btn.danger:hover{border-color:#ff6b6b;color:#ff6b6b}
+.est-modal{background:#181818;border-radius:12px;max-width:500px;width:100%;padding:0;border:1px solid var(--border)}
+.est-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.est-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:600px){.est-grid-3{grid-template-columns:1fr 1fr}.est-table{font-size:11px}.est-table td,.est-table th{padding:8px 6px}}
+
 /* ── item checklist ── */
 .item-check-btn{width:28px;height:28px;border-radius:6px;border:1.5px solid #333;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;color:#555}
 .item-check-btn:hover{border-color:#4ade80;color:#4ade80}
@@ -319,6 +355,10 @@ header.adm{background:#0a0a0a;border-bottom:1px solid var(--border);padding:14px
       <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
       Clientes
     </button>
+    <button class="admin-tab" id="tab-estoque" onclick="setAba('estoque')">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+      Estoque
+    </button>
   </nav>
 
   <div class="admin-section" id="sectionDashboard">
@@ -332,6 +372,25 @@ header.adm{background:#0a0a0a;border-bottom:1px solid var(--border);padding:14px
     <div class="stats-row" id="statsRow"></div>
     <div class="filters" id="filters"></div>
     <div class="orders" id="ordersList"></div>
+  </div>
+
+  <div class="admin-section" id="sectionEstoque">
+    <div class="est-body">
+      <div class="est-topbar">
+        <div style="font-family:'Bebas Neue';font-size:20px;letter-spacing:2px">Controle de Estoque</div>
+        <button onclick="abrirNovoItemEstoque()" style="padding:10px 18px;border-radius:7px;background:#fff;color:#000;border:none;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.5px">+ Novo Item</button>
+      </div>
+      <div class="est-cards" id="estCards"></div>
+      <div style="overflow-x:auto">
+        <table class="est-table">
+          <thead><tr>
+            <th>Item</th><th>Unidade</th><th>Estoque</th>
+            <th>Custo un.</th><th>Preço venda</th><th>Margem</th><th>Status</th><th></th>
+          </tr></thead>
+          <tbody id="estTabela"></tbody>
+        </table>
+      </div>
+    </div>
   </div>
 
   <div class="admin-section" id="sectionClientes">
@@ -394,9 +453,14 @@ header.adm{background:#0a0a0a;border-bottom:1px solid var(--border);padding:14px
       <!-- DADOS DO CLIENTE -->
       <div class="np-section">
         <span class="np-label">Dados do Cliente *</span>
-        <div class="np-row">
-          <input type="text" class="np-input" id="npNome" placeholder="Nome completo">
-          <input type="tel" class="np-input" id="npFone" placeholder="WhatsApp (com DDD)">
+        <div class="np-autocomplete">
+          <div class="np-row">
+            <div style="position:relative">
+              <input type="text" class="np-input" id="npNome" placeholder="Nome completo" oninput="npNomeAC(this.value)" onblur="setTimeout(()=>fecharAC(),150)" autocomplete="off">
+              <div class="np-ac-list" id="npAcList"></div>
+            </div>
+            <input type="tel" class="np-input" id="npFone" placeholder="WhatsApp (com DDD)">
+          </div>
         </div>
         <textarea class="np-textarea" id="npEnd" placeholder="Endereço (opcional)" style="margin-top:8px"></textarea>
       </div>
@@ -461,6 +525,45 @@ header.adm{background:#0a0a0a;border-bottom:1px solid var(--border);padding:14px
     <div class="np-actions">
       <button class="np-btn cancel" onclick="fecharNovoPedido()">Cancelar</button>
       <button class="np-btn save" id="npSaveBtn" onclick="salvarNovoPedido()">Salvar Pedido</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL ESTOQUE ============ -->
+<div class="modal-bg" id="estModalBg" onclick="if(event.target===this)fecharModalEstoque()">
+  <div class="est-modal">
+    <div class="cli-modal-header">
+      <div class="cli-modal-title" id="estModalTitle">Novo Item de Estoque</div>
+      <button class="cart-close" onclick="fecharModalEstoque()"><svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg></button>
+    </div>
+    <div class="cli-modal-body">
+      <div class="np-section">
+        <div class="est-grid-2">
+          <div><span class="np-label">Nome do item *</span><input type="text" class="np-input" id="estNome" placeholder="Ex: Papel A4 75g, Papel Couché..."></div>
+          <div><span class="np-label">Unidade</span><select class="np-select" id="estUnidade"><option value="resma">Resma</option><option value="folha">Folha</option><option value="rolo">Rolo</option><option value="kg">Kg</option><option value="litro">Litro</option><option value="unidade">Unidade</option><option value="caixa">Caixa</option><option value="pacote">Pacote</option></select></div>
+        </div>
+      </div>
+      <div class="np-section">
+        <div class="est-grid-3">
+          <div><span class="np-label">Qtd atual *</span><input type="number" class="np-input" id="estQtd" placeholder="0" min="0" step="0.01"></div>
+          <div><span class="np-label">Qtd mínima</span><input type="number" class="np-input" id="estQtdMin" placeholder="0" min="0" step="0.01"></div>
+          <div><span class="np-label">Custo unitário (R$) *</span><input type="number" class="np-input" id="estCusto" placeholder="0,00" min="0" step="0.01" oninput="calcMargemModal()"></div>
+        </div>
+      </div>
+      <div class="np-section">
+        <div class="est-grid-2">
+          <div><span class="np-label">Preço de venda (R$)</span><input type="number" class="np-input" id="estPreco" placeholder="0,00" min="0" step="0.01" oninput="calcMargemModal()"></div>
+          <div><span class="np-label">Margem estimada</span><div class="np-input" id="estMargemDisplay" style="display:flex;align-items:center;color:#888;font-family:'Bebas Neue';font-size:20px">—</div></div>
+        </div>
+      </div>
+      <div class="np-section">
+        <span class="np-label">Observações</span>
+        <textarea class="np-textarea" id="estObs" placeholder="Fornecedor, marca, especificações..."></textarea>
+      </div>
+    </div>
+    <div class="cli-modal-footer">
+      <button class="np-btn cancel" onclick="fecharModalEstoque()">Cancelar</button>
+      <button class="np-btn save" onclick="salvarItemEstoque()">Salvar</button>
     </div>
   </div>
 </div>
@@ -594,6 +697,7 @@ if(sessionStorage.getItem('ph_admin_logged') === '1'){
 function carregarPedidos(){
   try { pedidos = JSON.parse(localStorage.getItem('ph_pedidos') || '[]'); } catch(e){ pedidos = []; }
   carregarClientes();
+  carregarEstoque();
   setAba('dashboard');
 }
 
@@ -818,6 +922,111 @@ function setAba(aba){
   if(aba === 'dashboard') renderDashboard();
   if(aba === 'clientes') renderClientes();
   if(aba === 'pedidos') render();
+  if(aba === 'estoque') renderEstoque();
+}
+
+// ============ ESTOQUE ============
+let estoque = [];
+function carregarEstoque(){ try{ estoque=JSON.parse(localStorage.getItem('ph_estoque')||'[]'); }catch(e){ estoque=[]; } }
+function salvarEstoque(){ localStorage.setItem('ph_estoque', JSON.stringify(estoque)); }
+
+function renderEstoque(){
+  if(!estoque.length && !document.getElementById('estTabela')) return;
+  const totalItens = estoque.length;
+  const baixoEstoque = estoque.filter(i => i.qtdMin > 0 && i.qtdAtual <= i.qtdMin).length;
+  const semEstoque = estoque.filter(i => i.qtdAtual <= 0).length;
+  const valorTotal = estoque.reduce((s,i) => s + (i.qtdAtual * i.custoUnit), 0);
+
+  const cards = document.getElementById('estCards');
+  if(cards) cards.innerHTML = `
+    <div class="est-card"><div class="est-card-val" style="color:#60a5fa">${totalItens}</div><div class="est-card-lbl">Itens cadastrados</div></div>
+    <div class="est-card"><div class="est-card-val" style="color:#fb923c">${baixoEstoque}</div><div class="est-card-lbl">Estoque baixo</div></div>
+    <div class="est-card"><div class="est-card-val" style="color:#ff6b6b">${semEstoque}</div><div class="est-card-lbl">Sem estoque</div></div>
+    <div class="est-card"><div class="est-card-val" style="color:#4ade80">${formatarMoeda(valorTotal)}</div><div class="est-card-lbl">Valor em estoque</div></div>`;
+
+  const tbody = document.getElementById('estTabela');
+  if(!tbody) return;
+  if(!estoque.length){ tbody.innerHTML = '<tr><td colspan="8" style="color:#555;text-align:center;padding:40px">Nenhum item cadastrado. Clique em "+ Novo Item" para começar.</td></tr>'; return; }
+
+  tbody.innerHTML = estoque.map(item => {
+    const margem = item.precoVenda > 0 ? ((item.precoVenda - item.custoUnit) / item.precoVenda * 100) : null;
+    const margemClass = margem === null ? '' : margem >= 40 ? 'high' : margem >= 20 ? 'mid' : 'low';
+    const margemTxt = margem === null ? '—' : margem.toFixed(1) + '%';
+    let statusBadge, statusClass;
+    if(item.qtdAtual <= 0){ statusBadge='Sem estoque'; statusClass='out'; }
+    else if(item.qtdMin > 0 && item.qtdAtual <= item.qtdMin){ statusBadge='Estoque baixo'; statusClass='low'; }
+    else { statusBadge='OK'; statusClass='ok'; }
+    return `<tr>
+      <td><strong>${item.nome}</strong>${item.obs?'<br><small style="color:#555">'+item.obs+'</small>':''}</td>
+      <td style="color:#666">${item.unidade}</td>
+      <td><strong>${item.qtdAtual}</strong>${item.qtdMin>0?'<span style="color:#444"> / min '+item.qtdMin+'</span>':''}</td>
+      <td>${formatarMoeda(item.custoUnit)}</td>
+      <td>${item.precoVenda > 0 ? formatarMoeda(item.precoVenda) : '<span style="color:#444">—</span>'}</td>
+      <td><span class="est-margin ${margemClass}">${margemTxt}</span></td>
+      <td><span class="est-badge ${statusClass}">${statusBadge}</span></td>
+      <td style="white-space:nowrap">
+        <button class="est-act-btn" onclick="editarItemEstoque('${item.id}')" style="margin-right:4px">Editar</button>
+        <button class="est-act-btn danger" onclick="excluirItemEstoque('${item.id}')">×</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+let _estEditandoId = null;
+function abrirNovoItemEstoque(){
+  _estEditandoId = null;
+  document.getElementById('estModalTitle').textContent = 'Novo Item de Estoque';
+  ['estNome','estQtd','estQtdMin','estCusto','estPreco','estObs'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('estUnidade').value = 'resma';
+  document.getElementById('estMargemDisplay').textContent = '—';
+  document.getElementById('estMargemDisplay').style.color = '#888';
+  document.getElementById('estModalBg').classList.add('show');
+}
+function editarItemEstoque(id){
+  const it = estoque.find(i => i.id === id); if(!it) return;
+  _estEditandoId = id;
+  document.getElementById('estModalTitle').textContent = 'Editar Item';
+  document.getElementById('estNome').value = it.nome;
+  document.getElementById('estUnidade').value = it.unidade || 'resma';
+  document.getElementById('estQtd').value = it.qtdAtual;
+  document.getElementById('estQtdMin').value = it.qtdMin || '';
+  document.getElementById('estCusto').value = it.custoUnit;
+  document.getElementById('estPreco').value = it.precoVenda || '';
+  document.getElementById('estObs').value = it.obs || '';
+  calcMargemModal();
+  document.getElementById('estModalBg').classList.add('show');
+}
+function fecharModalEstoque(){ document.getElementById('estModalBg').classList.remove('show'); }
+function calcMargemModal(){
+  const custo = parseFloat(document.getElementById('estCusto').value) || 0;
+  const venda = parseFloat(document.getElementById('estPreco').value) || 0;
+  const el = document.getElementById('estMargemDisplay');
+  if(custo > 0 && venda > 0){
+    const m = ((venda - custo) / venda * 100);
+    el.textContent = m.toFixed(1) + '%';
+    el.style.color = m >= 40 ? '#4ade80' : m >= 20 ? '#facc15' : '#fb923c';
+  } else { el.textContent = '—'; el.style.color = '#888'; }
+}
+function salvarItemEstoque(){
+  const nome = document.getElementById('estNome').value.trim();
+  if(!nome){ showToast('Informe o nome do item'); return; }
+  const item = {
+    id: _estEditandoId || ('EST' + Date.now()),
+    nome, unidade: document.getElementById('estUnidade').value,
+    qtdAtual: parseFloat(document.getElementById('estQtd').value) || 0,
+    qtdMin: parseFloat(document.getElementById('estQtdMin').value) || 0,
+    custoUnit: parseFloat(document.getElementById('estCusto').value) || 0,
+    precoVenda: parseFloat(document.getElementById('estPreco').value) || 0,
+    obs: document.getElementById('estObs').value.trim()
+  };
+  if(_estEditandoId){ const i=estoque.findIndex(e=>e.id===_estEditandoId); if(i!==-1) estoque[i]=item; }
+  else estoque.unshift(item);
+  salvarEstoque(); fecharModalEstoque(); renderEstoque();
+  showToast(_estEditandoId ? 'Item atualizado!' : 'Item cadastrado!');
+}
+function excluirItemEstoque(id){
+  if(!confirm('Excluir este item do estoque?')) return;
+  estoque=estoque.filter(i=>i.id!==id); salvarEstoque(); renderEstoque(); showToast('Item removido');
 }
 
 // ============ DASHBOARD ============
@@ -971,6 +1180,28 @@ function salvarCliente(){
   salvarClientes(); fecharModalCliente(); renderClientes();
   showToast(_cliEditandoId?'Cliente atualizado!':'Cliente cadastrado!');
 }
+// ── AUTOCOMPLETE NOME CLIENTE ──
+function npNomeAC(q){
+  const list = document.getElementById('npAcList');
+  if(!q || q.length < 2){ list.classList.remove('show'); return; }
+  const t = q.toLowerCase();
+  const found = clientes.filter(c => c.nome.toLowerCase().includes(t)).slice(0, 6);
+  if(!found.length){ list.classList.remove('show'); return; }
+  list.innerHTML = found.map(c => `<div class="np-ac-item" onmousedown="selecionarClienteAC('${c.id}')">
+    <strong>${c.nome}</strong>
+    <span>${c.fone || ''}${c.cidade ? ' · ' + c.cidade : ''}${c.descontoTipo ? ' · 🏷️ desconto' : ''}</span>
+  </div>`).join('');
+  list.classList.add('show');
+}
+function selecionarClienteAC(id){
+  const c = clientes.find(c => c.id === id); if(!c) return;
+  document.getElementById('npNome').value = c.nome;
+  document.getElementById('npFone').value = c.fone || '';
+  document.getElementById('npEnd').value = c.endereco || '';
+  document.getElementById('npAcList').classList.remove('show');
+}
+function fecharAC(){ document.getElementById('npAcList')?.classList.remove('show'); }
+
 function excluirCliente(id){
   if(!confirm('Excluir cliente?')) return;
   clientes=clientes.filter(c=>c.id!==id); salvarClientes(); renderClientes(); showToast('Cliente removido');
