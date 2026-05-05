@@ -672,14 +672,22 @@ function closeStatusModal(){
 }
 
 // Mensagens automáticas por status
+function _listaItensMsg(p){
+  return p.itens.map(it => {
+    const sub = ((it.preco||0) * (it.qty||1)) + (it.arteValor||0);
+    const val = it.orc ? 'Sob orçamento' : 'R$ ' + sub.toFixed(2).replace('.',',');
+    return `▪️ ${it.qty}× *${it.nome}*\n   ${it.variacao} — ${val}`;
+  }).join('\n');
+}
+
 const MENSAGENS_STATUS = {
-  aguardando: (p) => `Olá ${p.cliente.nome}! 👋\n\nRecebemos seu pedido *#${p.id}* na Print House! 🎉\n\n*Resumo do pedido:*\n${p.itens.map(it => `▪️ ${it.qty}× ${it.nome} (${it.variacao})`).join('\n')}\n\n*Total:* ${p.hasOrc && p.total === 0 ? 'Sob orçamento' : formatarMoeda(p.total)}\n*Pagamento:* ${p.pagamento}\n\n⏳ Estamos *aguardando a confirmação do pagamento* para iniciar a produção.\n\nAssim que confirmarmos, você receberá uma nova mensagem. Qualquer dúvida, é só chamar aqui! 😊`,
+  aguardando: (p) => `Olá ${p.cliente.nome}! 👋\n\nRecebemos seu pedido *#${p.id}* na Print House! 🎉\n\n*Itens do pedido:*\n${_listaItensMsg(p)}\n\n*Total:* ${p.hasOrc && p.total === 0 ? 'Sob orçamento' : formatarMoeda(p.total)}\n*Pagamento:* ${p.pagamento}\n\n⏳ Estamos *aguardando a confirmação do pagamento* para iniciar a produção.\n\nAssim que confirmarmos, você receberá uma nova mensagem. Qualquer dúvida, é só chamar aqui! 😊`,
 
-  confirmado: (p) => `Olá ${p.cliente.nome}! Tudo bem?\n\nSeu pedido *#${p.id}* foi *CONFIRMADO* na Print House! ✓\n\n*Resumo:*\n${p.itens.map(it => `• ${it.qty}× ${it.nome} (${it.variacao})`).join('\n')}\n\n*Total:* ${p.hasOrc && p.total === 0 ? 'Sob orçamento' : formatarMoeda(p.total)}\n*Entrega:* ${p.entrega}\n*Pagamento:* ${p.pagamento}\n\nJá iniciamos os procedimentos do seu pedido. Qualquer dúvida estamos aqui!`,
+  confirmado: (p) => `Olá ${p.cliente.nome}! Tudo bem?\n\nSeu pedido *#${p.id}* foi *CONFIRMADO* na Print House! ✅\n\n*Itens do pedido:*\n${_listaItensMsg(p)}\n\n*Total:* ${p.hasOrc && p.total === 0 ? 'Sob orçamento' : formatarMoeda(p.total)}\n*Entrega:* ${p.entrega}\n*Pagamento:* ${p.pagamento}\n\nJá iniciamos os procedimentos do seu pedido. Qualquer dúvida estamos aqui! 😊`,
 
-  producao: (p) => `Olá ${p.cliente.nome}!\n\nBoas notícias! Seu pedido *#${p.id}* entrou em *PRODUÇÃO* agora. 🎨\n\nEm breve te aviso quando estiver pronto. Obrigada pela confiança!`,
+  producao: (p) => `Olá ${p.cliente.nome}!\n\nBoas notícias! Seu pedido *#${p.id}* entrou em *PRODUÇÃO* agora. 🎨\n\n*Itens em produção:*\n${_listaItensMsg(p)}\n\n*Total:* ${formatarMoeda(p.total)}\n\nEm breve te aviso quando estiver pronto. Obrigada pela confiança!`,
 
-  pronto: (p) => `Olá ${p.cliente.nome}!\n\nSeu pedido *#${p.id}* está *PRONTO*! ✨\n\n*Forma de entrega escolhida:* ${p.entrega}\n\nPodemos combinar a ${p.entrega.includes('Retirada') ? 'retirada' : 'entrega'}? Estou à disposição!`,
+  pronto: (p) => `Olá ${p.cliente.nome}!\n\nSeu pedido *#${p.id}* está *PRONTO*! ✨\n\n*Itens prontos:*\n${_listaItensMsg(p)}\n\n*Total:* ${formatarMoeda(p.total)}\n*Entrega:* ${p.entrega}\n\nPodemos combinar a ${p.entrega && p.entrega.includes('Retirada') ? 'retirada' : 'entrega'}? Estou à disposição!`,
 
   entregue: (p) => `Olá ${p.cliente.nome}!\n\nQue bom que recebeu seu pedido *#${p.id}*! 🎉\n\nMuito obrigada por escolher a Print House. Adoraríamos saber sua opinião sobre o produto. Sua avaliação é muito importante para nós!\n\nE não esquece: para próximas compras, estou sempre à disposição. ✨`,
 
@@ -979,13 +987,18 @@ function renderItens(){
       <span class="np-label" style="margin-bottom:6px">Produto</span>
       <select class="np-select" onchange="selecionarProduto(${idx}, this.value)" style="margin-bottom:8px">
         <option value="">— Selecione um produto —</option>
+        <option value="personalizado" ${item.custom?'selected':''}>✏️ Produto não listado (digitar manualmente)</option>
+        <option disabled>──────────────────</option>
         ${CATALOGO_PRODUTOS.map(p => `<option value="${p.id}" ${item.produtoId===p.id?'selected':''}>${p.nome} ${p.cat ? '· ' + p.cat : ''}</option>`).join('')}
       </select>
 
       ${item.custom ? `
-        <span class="np-label" style="margin-bottom:6px">Nome do produto personalizado</span>
-        <input type="text" class="np-input" placeholder="Digite o nome do produto"
+        <span class="np-label" style="margin-bottom:6px">Nome do produto</span>
+        <input type="text" class="np-input" placeholder="Ex: Camiseta manga longa, Caneca personalizada..."
           value="${item.nome}" oninput="atualizarItem(${idx}, 'nome', this.value)" style="margin:0 0 8px 0">
+        <span class="np-label" style="margin-bottom:6px">Descrição / Variação</span>
+        <input type="text" class="np-input" placeholder="Ex: Tamanho M, Cor azul, 100 unidades..."
+          value="${item.variacao}" oninput="atualizarItem(${idx}, 'variacao', this.value)" style="margin:0 0 8px 0">
       ` : ''}
 
       ${temVariacoes ? `
