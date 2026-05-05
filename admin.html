@@ -72,6 +72,45 @@ header.adm{background:#0a0a0a;border-bottom:1px solid var(--border);padding:14px
 .np-item{padding:12px;background:#0a0a0a;border:1px solid #2a2a2a;border-radius:8px;position:relative}
 .np-item-row{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;margin-bottom:8px}
 @media(max-width:500px){.np-item-row{grid-template-columns:1fr}}
+
+/* ── FINANCEIRO ── */
+.fin-body{padding:20px 4%}
+.fin-topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px}
+.fin-topbar h2{font-family:'Bebas Neue';font-size:20px;letter-spacing:2px;margin:0}
+.fin-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;margin-bottom:24px}
+.fin-card{background:#0d0d0d;border:1px solid #1e1e1e;border-radius:10px;padding:16px 18px}
+.fin-card-lbl{font-size:10px;color:#888;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
+.fin-card-val{font-size:1.5rem;font-weight:700;color:#fff}
+.fin-card-val.verde{color:#4caf50}
+.fin-card-val.vermelho{color:#e50914}
+.fin-card-val.amarelo{color:#ff9800}
+.fin-saldo-edit{display:flex;gap:8px;align-items:center;margin-top:8px}
+.fin-saldo-edit input{background:#111;border:1px solid #333;color:#fff;border-radius:6px;padding:6px 10px;font-size:.85rem;width:120px;font-family:inherit}
+.fin-saldo-edit button{padding:6px 12px;border-radius:6px;border:none;cursor:pointer;font-family:inherit;font-size:.8rem;font-weight:600}
+.fin-section{margin-bottom:30px}
+.fin-section-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.fin-section-hdr h3{font-size:13px;letter-spacing:1.5px;text-transform:uppercase;color:#aaa;margin:0}
+.fin-table{width:100%;border-collapse:collapse;font-size:.85rem}
+.fin-table th{text-align:left;padding:8px 10px;color:#666;font-size:.75rem;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid #1a1a1a}
+.fin-table td{padding:10px;border-bottom:1px solid #111;vertical-align:middle}
+.fin-table tr:hover td{background:#0a0a0a}
+.fin-badge{display:inline-block;padding:3px 8px;border-radius:4px;font-size:.72rem;font-weight:700;letter-spacing:.5px}
+.fin-badge.pendente{background:rgba(255,152,0,.15);color:#ff9800;border:1px solid rgba(255,152,0,.3)}
+.fin-badge.vencida{background:rgba(229,9,20,.15);color:#e50914;border:1px solid rgba(229,9,20,.3)}
+.fin-badge.paga{background:rgba(76,175,80,.15);color:#4caf50;border:1px solid rgba(76,175,80,.3)}
+.fin-badge.urgente{background:rgba(229,9,20,.15);color:#e50914;border:1px solid rgba(229,9,20,.3)}
+.fin-badge.normal{background:rgba(100,100,100,.15);color:#aaa;border:1px solid #333}
+.fin-badge.comprado{background:rgba(76,175,80,.15);color:#4caf50;border:1px solid rgba(76,175,80,.3)}
+.fin-empty{text-align:center;color:#444;padding:30px;font-size:.85rem}
+/* Modal financeiro */
+.fin-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px}
+.fin-modal{background:#111;border:1px solid #222;border-radius:12px;padding:24px;width:100%;max-width:420px;max-height:90vh;overflow-y:auto}
+.fin-modal h3{font-family:'Bebas Neue';font-size:18px;letter-spacing:2px;margin:0 0 18px}
+.fin-modal label{display:block;font-size:.78rem;color:#888;letter-spacing:.5px;margin-bottom:4px}
+.fin-modal input,.fin-modal select,.fin-modal textarea{width:100%;background:#0a0a0a;border:1px solid #2a2a2a;border-radius:7px;color:#fff;font-family:inherit;font-size:.85rem;padding:10px 12px;margin-bottom:14px;box-sizing:border-box}
+.fin-modal textarea{resize:vertical;min-height:60px}
+.fin-modal-btns{display:flex;gap:8px;justify-content:flex-end;margin-top:4px}
+
 .np-qty-row{display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap;margin-top:6px}
 .np-qty-field{display:flex;flex-direction:column;gap:4px;flex:1;min-width:80px}
 .np-qty-op{font-size:1.1rem;color:#555;padding-bottom:9px;font-weight:700;flex-shrink:0}
@@ -365,7 +404,143 @@ header.adm{background:#0a0a0a;border-bottom:1px solid var(--border);padding:14px
       <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
       Estoque
     </button>
+    <button class="admin-tab" id="tab-financeiro" onclick="setAba('financeiro')">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      Financeiro
+    </button>
   </nav>
+
+  <div class="admin-section" id="sectionFinanceiro">
+    <div class="fin-body">
+      <div class="fin-topbar">
+        <h2>Financeiro</h2>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button onclick="abrirModalConta()" style="padding:10px 16px;border-radius:7px;background:#e50914;color:#fff;border:none;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.5px">+ Conta a Pagar</button>
+          <button onclick="abrirModalCompra()" style="padding:10px 16px;border-radius:7px;background:#333;color:#fff;border:none;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.5px">+ Compra Necessária</button>
+        </div>
+      </div>
+      <div class="fin-cards">
+        <div class="fin-card">
+          <div class="fin-card-lbl">💰 Saldo em Caixa</div>
+          <div class="fin-card-val verde" id="finSaldoVal">R$ 0,00</div>
+          <div class="fin-saldo-edit">
+            <input type="number" id="finSaldoInput" placeholder="0,00" step="0.01">
+            <button onclick="atualizarSaldo()" style="background:#4caf50;color:#fff">Salvar</button>
+          </div>
+        </div>
+        <div class="fin-card">
+          <div class="fin-card-lbl">📋 Contas Pendentes</div>
+          <div class="fin-card-val vermelho" id="finContaTotal">R$ 0,00</div>
+          <div style="font-size:.75rem;color:#666;margin-top:4px" id="finContaQtd">0 contas</div>
+        </div>
+        <div class="fin-card">
+          <div class="fin-card-lbl">⚠️ Vencidas Hoje/Passadas</div>
+          <div class="fin-card-val vermelho" id="finVencidasTotal">R$ 0,00</div>
+          <div style="font-size:.75rem;color:#666;margin-top:4px" id="finVencidasQtd">0 contas</div>
+        </div>
+        <div class="fin-card">
+          <div class="fin-card-lbl">🛒 Compras Necessárias</div>
+          <div class="fin-card-val amarelo" id="finCompraTotal">R$ 0,00</div>
+          <div style="font-size:.75rem;color:#666;margin-top:4px" id="finCompraQtd">0 itens</div>
+        </div>
+      </div>
+
+      <!-- Contas a Pagar -->
+      <div class="fin-section">
+        <div class="fin-section-hdr">
+          <h3>Contas a Pagar / Dívidas</h3>
+          <div style="display:flex;gap:6px">
+            <button onclick="finFiltroContas='todas';renderFinanceiro()" id="fcTodas" style="padding:4px 10px;border-radius:5px;background:#222;color:#aaa;border:1px solid #333;cursor:pointer;font-size:.75rem">Todas</button>
+            <button onclick="finFiltroContas='pendentes';renderFinanceiro()" id="fcPend" style="padding:4px 10px;border-radius:5px;background:#222;color:#aaa;border:1px solid #333;cursor:pointer;font-size:.75rem">Pendentes</button>
+            <button onclick="finFiltroContas='pagas';renderFinanceiro()" id="fcPagas" style="padding:4px 10px;border-radius:5px;background:#222;color:#aaa;border:1px solid #333;cursor:pointer;font-size:.75rem">Pagas</button>
+          </div>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="fin-table">
+            <thead><tr>
+              <th>Credor / Fornecedor</th>
+              <th>Descrição</th>
+              <th>Valor</th>
+              <th>Vencimento</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr></thead>
+            <tbody id="finContasBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Lista de Compras -->
+      <div class="fin-section">
+        <div class="fin-section-hdr">
+          <h3>Lista de Compras — Gráfica</h3>
+          <div style="display:flex;gap:6px">
+            <button onclick="finFiltroCompras='todas';renderFinanceiro()" style="padding:4px 10px;border-radius:5px;background:#222;color:#aaa;border:1px solid #333;cursor:pointer;font-size:.75rem">Todas</button>
+            <button onclick="finFiltroCompras='pendentes';renderFinanceiro()" style="padding:4px 10px;border-radius:5px;background:#222;color:#aaa;border:1px solid #333;cursor:pointer;font-size:.75rem">Pendentes</button>
+          </div>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="fin-table">
+            <thead><tr>
+              <th>Item</th>
+              <th>Qtd</th>
+              <th>Valor Est.</th>
+              <th>Prioridade</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr></thead>
+            <tbody id="finComprasBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Conta a Pagar -->
+  <div class="fin-modal-overlay" id="modalConta" style="display:none" onclick="if(event.target===this)fecharModalConta()">
+    <div class="fin-modal">
+      <h3 id="modalContaTitulo">Nova Conta a Pagar</h3>
+      <label>Credor / Fornecedor</label>
+      <input type="text" id="fcCredor" placeholder="Ex: Locadora, Fornecedor papel, Uber...">
+      <label>Descrição</label>
+      <input type="text" id="fcDesc" placeholder="Ex: Aluguel março, Resma A4, Conta luz...">
+      <label>Valor (R$)</label>
+      <input type="number" id="fcValor" step="0.01" min="0" placeholder="0,00">
+      <label>Data de Vencimento</label>
+      <input type="date" id="fcVenc">
+      <label>Observações</label>
+      <textarea id="fcObs" placeholder="Notas adicionais..."></textarea>
+      <div class="fin-modal-btns">
+        <button onclick="fecharModalConta()" style="padding:10px 18px;background:#222;color:#aaa;border:1px solid #333;border-radius:7px;cursor:pointer;font-family:inherit">Cancelar</button>
+        <button onclick="salvarConta()" style="padding:10px 18px;background:#e50914;color:#fff;border:none;border-radius:7px;cursor:pointer;font-family:inherit;font-weight:700">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Compra -->
+  <div class="fin-modal-overlay" id="modalCompra" style="display:none" onclick="if(event.target===this)fecharModalCompra()">
+    <div class="fin-modal">
+      <h3 id="modalCompraTitulo">Nova Compra Necessária</h3>
+      <label>Item</label>
+      <input type="text" id="fcoItem" placeholder="Ex: Resma A4, Toner, Bobina...">
+      <label>Quantidade</label>
+      <input type="number" id="fcoQtd" min="1" placeholder="1">
+      <label>Valor Estimado (R$)</label>
+      <input type="number" id="fcoValor" step="0.01" min="0" placeholder="0,00">
+      <label>Prioridade</label>
+      <select id="fcoPrior">
+        <option value="urgente">🔴 Urgente</option>
+        <option value="normal" selected>🟡 Normal</option>
+        <option value="baixa">🟢 Baixa prioridade</option>
+      </select>
+      <label>Observações</label>
+      <textarea id="fcoObs" placeholder="Onde comprar, motivo, etc..."></textarea>
+      <div class="fin-modal-btns">
+        <button onclick="fecharModalCompra()" style="padding:10px 18px;background:#222;color:#aaa;border:1px solid #333;border-radius:7px;cursor:pointer;font-family:inherit">Cancelar</button>
+        <button onclick="salvarCompra()" style="padding:10px 18px;background:#e50914;color:#fff;border:none;border-radius:7px;cursor:pointer;font-family:inherit;font-weight:700">Salvar</button>
+      </div>
+    </div>
+  </div>
 
   <div class="admin-section" id="sectionDashboard">
     <div class="dash-body">
@@ -704,6 +879,7 @@ function carregarPedidos(){
   try { pedidos = JSON.parse(localStorage.getItem('ph_pedidos') || '[]'); } catch(e){ pedidos = []; }
   carregarClientes();
   carregarEstoque();
+  carregarFinanceiro();
   setAba('dashboard');
 }
 
@@ -929,6 +1105,7 @@ function setAba(aba){
   if(aba === 'clientes') renderClientes();
   if(aba === 'pedidos') render();
   if(aba === 'estoque') renderEstoque();
+  if(aba === 'financeiro') renderFinanceiro();
 }
 
 // ============ ESTOQUE ============
@@ -1830,6 +2007,224 @@ function confirmarImport(modo){
   if(_abaAtiva === 'dashboard') renderDashboard();
   else setAba('pedidos');
   if(modo !== 'merge') showToast(`Importação concluída — ${novos.length} pedidos`);
+}
+
+
+// ============ FINANCEIRO ============
+let financeiro = { saldo: 0, contas: [], compras: [] };
+let finFiltroContas = 'todas';
+let finFiltroCompras = 'todas';
+let finEditandoConta = null;
+let finEditandoCompra = null;
+
+function carregarFinanceiro(){
+  try { financeiro = JSON.parse(localStorage.getItem('ph_financeiro') || '{}');
+    financeiro.saldo = financeiro.saldo || 0;
+    financeiro.contas = financeiro.contas || [];
+    financeiro.compras = financeiro.compras || [];
+  } catch(e){ financeiro = {saldo:0, contas:[], compras:[]}; }
+}
+function salvarFinanceiro(){ localStorage.setItem('ph_financeiro', JSON.stringify(financeiro)); }
+
+function atualizarSaldo(){
+  const v = parseFloat(document.getElementById('finSaldoInput').value) || 0;
+  financeiro.saldo = v;
+  salvarFinanceiro();
+  renderFinanceiro();
+  showToast('Saldo atualizado');
+}
+
+function renderFinanceiro(){
+  carregarFinanceiro();
+  const hoje = new Date(); hoje.setHours(0,0,0,0);
+
+  // Cards
+  const pendentes = financeiro.contas.filter(c => !c.paga);
+  const vencidas = pendentes.filter(c => c.vencimento && new Date(c.vencimento+'T00:00:00') < hoje);
+  const comprasPend = financeiro.compras.filter(c => !c.comprado);
+  const totalPend = pendentes.reduce((s,c) => s+(c.valor||0), 0);
+  const totalVenc = vencidas.reduce((s,c) => s+(c.valor||0), 0);
+  const totalCompras = comprasPend.reduce((s,c) => s+((c.valorEst||0)*(c.qtd||1)), 0);
+
+  document.getElementById('finSaldoVal').textContent = formatarMoeda(financeiro.saldo);
+  document.getElementById('finSaldoInput').value = '';
+  document.getElementById('finContaTotal').textContent = formatarMoeda(totalPend);
+  document.getElementById('finContaQtd').textContent = pendentes.length + ' conta(s)';
+  document.getElementById('finVencidasTotal').textContent = formatarMoeda(totalVenc);
+  document.getElementById('finVencidasQtd').textContent = vencidas.length + ' conta(s)';
+  document.getElementById('finCompraTotal').textContent = formatarMoeda(totalCompras);
+  document.getElementById('finCompraQtd').textContent = comprasPend.length + ' item(ns)';
+
+  // Tabela contas
+  let contasFilt = financeiro.contas;
+  if(finFiltroContas === 'pendentes') contasFilt = financeiro.contas.filter(c => !c.paga);
+  if(finFiltroContas === 'pagas') contasFilt = financeiro.contas.filter(c => c.paga);
+  contasFilt = [...contasFilt].sort((a,b) => {
+    if(a.paga && !b.paga) return 1; if(!a.paga && b.paga) return -1;
+    return (a.vencimento||'') < (b.vencimento||'') ? -1 : 1;
+  });
+
+  const tbody = document.getElementById('finContasBody');
+  if(contasFilt.length === 0){
+    tbody.innerHTML = '<tr><td colspan="6" class="fin-empty">Nenhuma conta registrada</td></tr>';
+  } else {
+    tbody.innerHTML = contasFilt.map(c => {
+      let badge, statusLabel;
+      if(c.paga){ badge='paga'; statusLabel='Paga'; }
+      else if(c.vencimento && new Date(c.vencimento+'T00:00:00') < hoje){ badge='vencida'; statusLabel='Vencida'; }
+      else { badge='pendente'; statusLabel='Pendente'; }
+      const vencStr = c.vencimento ? new Date(c.vencimento+'T00:00:00').toLocaleDateString('pt-BR') : '—';
+      return `<tr>
+        <td style="font-weight:600">${c.credor||'—'}</td>
+        <td style="color:#aaa">${c.descricao||'—'}</td>
+        <td style="font-weight:700;color:#fff">${formatarMoeda(c.valor||0)}</td>
+        <td style="color:#aaa">${vencStr}</td>
+        <td><span class="fin-badge ${badge}">${statusLabel}</span></td>
+        <td>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            ${!c.paga ? `<button onclick="marcarContaPaga('${c.id}')" style="padding:4px 8px;background:rgba(76,175,80,.15);color:#4caf50;border:1px solid rgba(76,175,80,.3);border-radius:5px;cursor:pointer;font-size:.75rem">✓ Pagar</button>` : `<button onclick="marcarContaPaga('${c.id}')" style="padding:4px 8px;background:#111;color:#666;border:1px solid #222;border-radius:5px;cursor:pointer;font-size:.75rem">↩ Reabrir</button>`}
+            <button onclick="editarConta('${c.id}')" style="padding:4px 8px;background:#222;color:#aaa;border:1px solid #333;border-radius:5px;cursor:pointer;font-size:.75rem">✏️</button>
+            <button onclick="deletarConta('${c.id}')" style="padding:4px 8px;background:rgba(229,9,20,.1);color:#e50914;border:1px solid rgba(229,9,20,.3);border-radius:5px;cursor:pointer;font-size:.75rem">✕</button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  // Tabela compras
+  let comprasFilt = financeiro.compras;
+  if(finFiltroCompras === 'pendentes') comprasFilt = financeiro.compras.filter(c => !c.comprado);
+  comprasFilt = [...comprasFilt].sort((a,b) => {
+    if(a.comprado && !b.comprado) return 1; if(!a.comprado && b.comprado) return -1;
+    const ord = {urgente:0, normal:1, baixa:2};
+    return (ord[a.prioridade]||1) - (ord[b.prioridade]||1);
+  });
+
+  const tbodyC = document.getElementById('finComprasBody');
+  if(comprasFilt.length === 0){
+    tbodyC.innerHTML = '<tr><td colspan="6" class="fin-empty">Nenhuma compra registrada</td></tr>';
+  } else {
+    tbodyC.innerHTML = comprasFilt.map(c => {
+      const priorLabel = {urgente:'🔴 Urgente', normal:'🟡 Normal', baixa:'🟢 Baixa'}[c.prioridade] || 'Normal';
+      const priorBadge = c.comprado ? 'comprado' : (c.prioridade === 'urgente' ? 'urgente' : 'normal');
+      const statusLabel = c.comprado ? 'Comprado' : 'Pendente';
+      const total = (c.valorEst||0) * (c.qtd||1);
+      return `<tr>
+        <td style="font-weight:600">${c.item||'—'}</td>
+        <td style="color:#aaa">${c.qtd||1}</td>
+        <td style="font-weight:700">${total > 0 ? formatarMoeda(total) : '—'}</td>
+        <td><span style="font-size:.78rem;color:#aaa">${priorLabel}</span></td>
+        <td><span class="fin-badge ${priorBadge}">${statusLabel}</span></td>
+        <td>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            ${!c.comprado ? `<button onclick="marcarComprado('${c.id}')" style="padding:4px 8px;background:rgba(76,175,80,.15);color:#4caf50;border:1px solid rgba(76,175,80,.3);border-radius:5px;cursor:pointer;font-size:.75rem">✓ Comprado</button>` : `<button onclick="marcarComprado('${c.id}')" style="padding:4px 8px;background:#111;color:#666;border:1px solid #222;border-radius:5px;cursor:pointer;font-size:.75rem">↩ Reabrir</button>`}
+            <button onclick="editarCompra('${c.id}')" style="padding:4px 8px;background:#222;color:#aaa;border:1px solid #333;border-radius:5px;cursor:pointer;font-size:.75rem">✏️</button>
+            <button onclick="deletarCompra('${c.id}')" style="padding:4px 8px;background:rgba(229,9,20,.1);color:#e50914;border:1px solid rgba(229,9,20,.3);border-radius:5px;cursor:pointer;font-size:.75rem">✕</button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+}
+
+// Contas CRUD
+function abrirModalConta(){
+  finEditandoConta = null;
+  document.getElementById('modalContaTitulo').textContent = 'Nova Conta a Pagar';
+  document.getElementById('fcCredor').value = '';
+  document.getElementById('fcDesc').value = '';
+  document.getElementById('fcValor').value = '';
+  document.getElementById('fcVenc').value = '';
+  document.getElementById('fcObs').value = '';
+  document.getElementById('modalConta').style.display = 'flex';
+}
+function fecharModalConta(){ document.getElementById('modalConta').style.display = 'none'; }
+function editarConta(id){
+  const c = financeiro.contas.find(x => x.id === id); if(!c) return;
+  finEditandoConta = id;
+  document.getElementById('modalContaTitulo').textContent = 'Editar Conta';
+  document.getElementById('fcCredor').value = c.credor || '';
+  document.getElementById('fcDesc').value = c.descricao || '';
+  document.getElementById('fcValor').value = c.valor || '';
+  document.getElementById('fcVenc').value = c.vencimento || '';
+  document.getElementById('fcObs').value = c.obs || '';
+  document.getElementById('modalConta').style.display = 'flex';
+}
+function salvarConta(){
+  const credor = document.getElementById('fcCredor').value.trim();
+  const descricao = document.getElementById('fcDesc').value.trim();
+  const valor = parseFloat(document.getElementById('fcValor').value) || 0;
+  const vencimento = document.getElementById('fcVenc').value;
+  const obs = document.getElementById('fcObs').value.trim();
+  if(!credor && !descricao){ showToast('Preencha o credor ou descrição'); return; }
+  if(finEditandoConta){
+    const c = financeiro.contas.find(x => x.id === finEditandoConta);
+    if(c){ Object.assign(c, {credor, descricao, valor, vencimento, obs}); }
+  } else {
+    financeiro.contas.push({id:'fc'+Date.now(), credor, descricao, valor, vencimento, paga:false, obs});
+  }
+  salvarFinanceiro(); fecharModalConta(); renderFinanceiro();
+  showToast(finEditandoConta ? 'Conta atualizada' : 'Conta adicionada');
+}
+function marcarContaPaga(id){
+  const c = financeiro.contas.find(x => x.id === id); if(!c) return;
+  c.paga = !c.paga; salvarFinanceiro(); renderFinanceiro();
+  showToast(c.paga ? 'Conta marcada como paga ✓' : 'Conta reaberta');
+}
+function deletarConta(id){
+  if(!confirm('Excluir esta conta?')) return;
+  financeiro.contas = financeiro.contas.filter(x => x.id !== id);
+  salvarFinanceiro(); renderFinanceiro(); showToast('Conta removida');
+}
+
+// Compras CRUD
+function abrirModalCompra(){
+  finEditandoCompra = null;
+  document.getElementById('modalCompraTitulo').textContent = 'Nova Compra Necessária';
+  document.getElementById('fcoItem').value = '';
+  document.getElementById('fcoQtd').value = '1';
+  document.getElementById('fcoValor').value = '';
+  document.getElementById('fcoPrior').value = 'normal';
+  document.getElementById('fcoObs').value = '';
+  document.getElementById('modalCompra').style.display = 'flex';
+}
+function fecharModalCompra(){ document.getElementById('modalCompra').style.display = 'none'; }
+function editarCompra(id){
+  const c = financeiro.compras.find(x => x.id === id); if(!c) return;
+  finEditandoCompra = id;
+  document.getElementById('modalCompraTitulo').textContent = 'Editar Item';
+  document.getElementById('fcoItem').value = c.item || '';
+  document.getElementById('fcoQtd').value = c.qtd || 1;
+  document.getElementById('fcoValor').value = c.valorEst || '';
+  document.getElementById('fcoPrior').value = c.prioridade || 'normal';
+  document.getElementById('fcoObs').value = c.obs || '';
+  document.getElementById('modalCompra').style.display = 'flex';
+}
+function salvarCompra(){
+  const item = document.getElementById('fcoItem').value.trim();
+  const qtd = parseInt(document.getElementById('fcoQtd').value) || 1;
+  const valorEst = parseFloat(document.getElementById('fcoValor').value) || 0;
+  const prioridade = document.getElementById('fcoPrior').value;
+  const obs = document.getElementById('fcoObs').value.trim();
+  if(!item){ showToast('Informe o item'); return; }
+  if(finEditandoCompra){
+    const c = financeiro.compras.find(x => x.id === finEditandoCompra);
+    if(c){ Object.assign(c, {item, qtd, valorEst, prioridade, obs}); }
+  } else {
+    financeiro.compras.push({id:'fco'+Date.now(), item, qtd, valorEst, prioridade, comprado:false, obs});
+  }
+  salvarFinanceiro(); fecharModalCompra(); renderFinanceiro();
+  showToast(finEditandoCompra ? 'Item atualizado' : 'Item adicionado');
+}
+function marcarComprado(id){
+  const c = financeiro.compras.find(x => x.id === id); if(!c) return;
+  c.comprado = !c.comprado; salvarFinanceiro(); renderFinanceiro();
+  showToast(c.comprado ? 'Item marcado como comprado ✓' : 'Item reaberto');
+}
+function deletarCompra(id){
+  if(!confirm('Excluir este item?')) return;
+  financeiro.compras = financeiro.compras.filter(x => x.id !== id);
+  salvarFinanceiro(); renderFinanceiro(); showToast('Item removido');
 }
 
 // ============ TOAST ============
