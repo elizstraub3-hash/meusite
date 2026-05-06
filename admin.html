@@ -380,7 +380,7 @@ header.adm{background:#0a0a0a;border-bottom:1px solid var(--border);padding:14px
     <div class="adm-logo">PRINT HOUSE<span>ADMIN PANEL</span></div>
     <div class="adm-actions">
       <button onclick="abrirNovoPedido()" class="primary">+ Novo Pedido</button>
-      <button onclick="exportarPedidos()" title="Exportar">⬇ Exportar</button>
+      <button onclick="exportarPedidos()" title="Exportar">Exportar</button>
       <button onclick="document.getElementById('importFileInput').click()" title="Importar pedidos de arquivo JSON">⬆ Importar</button>
       <input type="file" id="importFileInput" accept=".json" style="display:none" onchange="importarPedidos(this)">
       <button onclick="logout()" class="danger">Sair</button>
@@ -421,7 +421,7 @@ header.adm{background:#0a0a0a;border-bottom:1px solid var(--border);padding:14px
       </div>
       <div class="fin-cards">
         <div class="fin-card">
-          <div class="fin-card-lbl">💰 Saldo em Caixa</div>
+          <div class="fin-card-lbl">Saldo em Caixa</div>
           <div class="fin-card-val verde" id="finSaldoVal">R$ 0,00</div>
           <div class="fin-saldo-edit">
             <input type="number" id="finSaldoInput" placeholder="0,00" step="0.01">
@@ -429,7 +429,7 @@ header.adm{background:#0a0a0a;border-bottom:1px solid var(--border);padding:14px
           </div>
         </div>
         <div class="fin-card">
-          <div class="fin-card-lbl">📋 Contas Pendentes</div>
+          <div class="fin-card-lbl">Contas Pendentes</div>
           <div class="fin-card-val vermelho" id="finContaTotal">R$ 0,00</div>
           <div style="font-size:.75rem;color:#666;margin-top:4px" id="finContaQtd">0 contas</div>
         </div>
@@ -439,7 +439,7 @@ header.adm{background:#0a0a0a;border-bottom:1px solid var(--border);padding:14px
           <div style="font-size:.75rem;color:#666;margin-top:4px" id="finVencidasQtd">0 contas</div>
         </div>
         <div class="fin-card">
-          <div class="fin-card-lbl">🛒 Compras Necessárias</div>
+          <div class="fin-card-lbl">Compras Necessárias</div>
           <div class="fin-card-val amarelo" id="finCompraTotal">R$ 0,00</div>
           <div style="font-size:.75rem;color:#666;margin-top:4px" id="finCompraQtd">0 itens</div>
         </div>
@@ -529,9 +529,9 @@ header.adm{background:#0a0a0a;border-bottom:1px solid var(--border);padding:14px
       <input type="number" id="fcoValor" step="0.01" min="0" placeholder="0,00">
       <label>Prioridade</label>
       <select id="fcoPrior">
-        <option value="urgente">🔴 Urgente</option>
-        <option value="normal" selected>🟡 Normal</option>
-        <option value="baixa">🟢 Baixa prioridade</option>
+        <option value="urgente">Urgente</option>
+        <option value="normal" selected>Normal</option>
+        <option value="baixa">Baixa prioridade</option>
       </select>
       <label>Observações</label>
       <textarea id="fcoObs" placeholder="Onde comprar, motivo, etc..."></textarea>
@@ -1245,9 +1245,9 @@ function renderDashboard(){
     </div>`;
 
   let html = `<div class="dash-section">
-    <div class="dash-section-title">🔴 Aguardando Pagamento <span>(${devendo.length})</span></div>`;
+    <div class="dash-section-title">Aguardando Pagamento <span>(${devendo.length})</span></div>`;
   if(!devendo.length){
-    html += `<div class="dash-empty">Nenhum pedido aguardando pagamento ✅</div>`;
+    html += `<div class="dash-empty">Nenhum pedido aguardando pagamento</div>`;
   } else {
     devendo.sort((a,b)=>new Date(a.data)-new Date(b.data)).forEach(p => {
       const fone=(p.cliente.fone||'').replace(/\D/g,'');
@@ -1269,7 +1269,7 @@ function renderDashboard(){
     });
   }
   html += `</div><div class="dash-section">
-    <div class="dash-section-title">🟡 Em Andamento <span>(${andamento.length})</span></div>`;
+    <div class="dash-section-title">Em Andamento <span>(${andamento.length})</span></div>`;
   if(!andamento.length){
     html += `<div class="dash-empty">Nenhum pedido em andamento.</div>`;
   } else {
@@ -1310,7 +1310,7 @@ function renderClientes(){
       <div class="cli-card-name">${c.nome}</div>
       ${c.fone?`<div class="cli-card-fone">${c.fone}</div>`:''}
       <div class="cli-card-meta">${c.cidade?c.cidade+'<br>':''}${c.endereco?c.endereco+'<br>':''}${peds.length} pedido${peds.length!==1?'s':''} · ${formatarMoeda(gasto)}${c.obs?'<br><em style="color:#555">'+c.obs+'</em>':''}</div>
-      ${descLabel?`<div class="cli-desconto">🏷️ ${descLabel}</div>`:''}
+      ${descLabel?`<div class="cli-desconto">${descLabel}</div>`:''}
       <div class="cli-card-actions">
         ${c.fone?`<button class="cli-btn" style="background:#25d366;border-color:#25d366;color:#fff" onclick="contatarClienteId('${c.id}')">WhatsApp</button>`:''}
         <button class="cli-btn" onclick="editarCliente('${c.id}')">Editar</button>
@@ -1372,7 +1372,7 @@ function npNomeAC(q){
   if(!found.length){ list.classList.remove('show'); return; }
   list.innerHTML = found.map(c => `<div class="np-ac-item" onmousedown="selecionarClienteAC('${c.id}')">
     <strong>${c.nome}</strong>
-    <span>${c.fone || ''}${c.cidade ? ' · ' + c.cidade : ''}${c.descontoTipo ? ' · 🏷️ desconto' : ''}</span>
+    <span>${c.fone || ''}${c.cidade ? ' · ' + c.cidade : ''}${c.descontoTipo ? ' · descontosconto' : ''}</span>
   </div>`).join('');
   list.classList.add('show');
 }
@@ -1454,15 +1454,15 @@ function _listaItensMsg(p){
 }
 
 const MENSAGENS_STATUS = {
-  aguardando: (p) => `Olá ${p.cliente.nome}! 👋\n\nRecebemos seu pedido *#${p.id}* na Print House! 🎉\n\n*Itens do pedido:*\n${_listaItensMsg(p)}\n\n*Total:* ${p.hasOrc && p.total === 0 ? 'Sob orçamento' : formatarMoeda(p.total)}\n*Pagamento:* ${p.pagamento}\n\n⏳ Estamos *aguardando a confirmação do pagamento* para iniciar a produção.\n\nAssim que confirmarmos, você receberá uma nova mensagem. Qualquer dúvida, é só chamar aqui! 😊`,
+  aguardando: (p) => `Olá ${p.cliente.nome}!\n\nRecebemos seu pedido *#${p.id}* na Print House!\n\n*Itens do pedido:*\n${_listaItensMsg(p)}\n\n*Total:* ${p.hasOrc && p.total === 0 ? 'Sob orçamento' : formatarMoeda(p.total)}\n*Pagamento:* ${p.pagamento}\n\nEstamos *aguardando a confirmação do pagamento* para iniciar a produção.\n\nAssim que confirmarmos, você receberá uma nova mensagem. Qualquer dúvida, é só chamar aqui!`,
 
-  confirmado: (p) => `Olá ${p.cliente.nome}! Tudo bem?\n\nSeu pedido *#${p.id}* foi *CONFIRMADO* na Print House! ✅\n\n*Itens do pedido:*\n${_listaItensMsg(p)}\n\n*Total:* ${p.hasOrc && p.total === 0 ? 'Sob orçamento' : formatarMoeda(p.total)}\n*Entrega:* ${p.entrega}\n*Pagamento:* ${p.pagamento}\n\nJá iniciamos os procedimentos do seu pedido. Qualquer dúvida estamos aqui! 😊`,
+  confirmado: (p) => `Olá ${p.cliente.nome}! Tudo bem?\n\nSeu pedido *#${p.id}* foi *CONFIRMADO* na Print House!\n\n*Itens do pedido:*\n${_listaItensMsg(p)}\n\n*Total:* ${p.hasOrc && p.total === 0 ? 'Sob orçamento' : formatarMoeda(p.total)}\n*Entrega:* ${p.entrega}\n*Pagamento:* ${p.pagamento}\n\nJá iniciamos os procedimentos do seu pedido. Qualquer dúvida estamos aqui!`,
 
-  producao: (p) => `Olá ${p.cliente.nome}!\n\nBoas notícias! Seu pedido *#${p.id}* entrou em *PRODUÇÃO* agora. 🎨\n\n*Itens em produção:*\n${_listaItensMsg(p)}\n\n*Total:* ${formatarMoeda(p.total)}\n\nEm breve te aviso quando estiver pronto. Obrigada pela confiança!`,
+  producao: (p) => `Olá ${p.cliente.nome}!\n\nBoas notícias! Seu pedido *#${p.id}* entrou em *PRODUÇÃO* agora.\n\n*Itens em produção:*\n${_listaItensMsg(p)}\n\n*Total:* ${formatarMoeda(p.total)}\n\nEm breve te aviso quando estiver pronto. Obrigada pela confiança!`,
 
-  pronto: (p) => `Olá ${p.cliente.nome}!\n\nSeu pedido *#${p.id}* está *PRONTO*! ✨\n\n*Itens prontos:*\n${_listaItensMsg(p)}\n\n*Total:* ${formatarMoeda(p.total)}\n*Entrega:* ${p.entrega}\n\nPodemos combinar a ${p.entrega && p.entrega.includes('Retirada') ? 'retirada' : 'entrega'}? Estou à disposição!`,
+  pronto: (p) => `Olá ${p.cliente.nome}!\n\nSeu pedido *#${p.id}* está *PRONTO*!\n\n*Itens prontos:*\n${_listaItensMsg(p)}\n\n*Total:* ${formatarMoeda(p.total)}\n*Entrega:* ${p.entrega}\n\nPodemos combinar a ${p.entrega && p.entrega.includes('Retirada') ? 'retirada' : 'entrega'}? Estou à disposição!`,
 
-  entregue: (p) => `Olá ${p.cliente.nome}!\n\nQue bom que recebeu seu pedido *#${p.id}*! 🎉\n\nMuito obrigada por escolher a Print House. Adoraríamos saber sua opinião sobre o produto. Sua avaliação é muito importante para nós!\n\nE não esquece: para próximas compras, estou sempre à disposição. ✨`,
+  entregue: (p) => `Olá ${p.cliente.nome}!\n\nQue bom que recebeu seu pedido *#${p.id}*!\n\nMuito obrigada por escolher a Print House. Adoraríamos saber sua opinião sobre o produto. Sua avaliação é muito importante para nós!\n\nE não esquece: para próximas compras, estou sempre à disposição.`,
 
   cancelado: (p) => `Olá ${p.cliente.nome},\n\nInformamos que seu pedido *#${p.id}* foi *CANCELADO*.\n\nSe houver dúvidas ou se quiser fazer um novo pedido, é só chamar aqui no WhatsApp. Estamos sempre à disposição.`
 };
@@ -1763,7 +1763,7 @@ function renderItens(){
       <span class="np-label" style="margin-bottom:6px">Produto</span>
       <select class="np-select" onchange="selecionarProduto(${idx}, this.value)" style="margin-bottom:8px">
         <option value="">— Selecione um produto —</option>
-        <option value="personalizado" ${item.custom?'selected':''}>✏️ Produto não listado (digitar manualmente)</option>
+        <option value="personalizado" ${item.custom?'selected':''}>Produto não listado (digitar manualmente)</option>
         <option disabled>──────────────────</option>
         ${CATALOGO_PRODUTOS.map(p => `<option value="${p.id}" ${item.produtoId===p.id?'selected':''}>${p.nome} ${p.cat ? '· ' + p.cat : ''}</option>`).join('')}
       </select>
@@ -1950,7 +1950,7 @@ function abrirModalImport(novos){
   overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;display:flex;align-items:center;justify-content:center';
   overlay.innerHTML = `
     <div style="background:#1a1a2e;border:1px solid #333;border-radius:12px;padding:28px;max-width:420px;width:90%;color:#e0e0e0">
-      <h3 style="margin:0 0 12px;color:#fff;font-size:1.1rem">📥 Importar Pedidos</h3>
+      <h3 style="margin:0 0 12px;color:#fff;font-size:1.1rem">Importar Pedidos</h3>
       <p style="margin:0 0 8px;font-size:.93rem">Arquivo contém <strong style="color:#e50914">${novos.length} pedidos</strong>.</p>
       <ul style="margin:0 0 18px;padding-left:18px;font-size:.88rem;color:#aaa;line-height:1.7">
         <li>Pedidos atuais no painel: <strong style="color:#fff">${existentes}</strong></li>
@@ -1960,13 +1960,13 @@ function abrirModalImport(novos){
       <p style="margin:0 0 20px;font-size:.88rem;color:#aaa">Como deseja importar?</p>
       <div style="display:flex;gap:10px;flex-wrap:wrap">
         <button onclick="confirmarImport('merge')" style="flex:1;padding:10px;background:#333;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:.9rem">
-          🔀 Mesclar<br><small style="color:#aaa;font-size:.75rem">Adiciona novos, mantém existentes</small>
+          Mesclar<br><small style="color:#aaa;font-size:.75rem">Adiciona novos, mantém existentes</small>
         </button>
         <button onclick="confirmarImport('sobrescrever')" style="flex:1;padding:10px;background:#7b1fa2;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:.9rem">
-          ♻️ Substituir duplicatas<br><small style="color:#ddd;font-size:.75rem">Atualiza IDs repetidos com os do arquivo</small>
+          Substituir duplicatas<br><small style="color:#ddd;font-size:.75rem">Atualiza IDs repetidos com os do arquivo</small>
         </button>
         <button onclick="confirmarImport('tudo')" style="flex:1;padding:10px;background:#b71c1c;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:.9rem">
-          🗑 Substituir tudo<br><small style="color:#ddd;font-size:.75rem">Apaga painel atual e usa o arquivo</small>
+          Substituir tudo<br><small style="color:#ddd;font-size:.75rem">Apaga painel atual e usa o arquivo</small>
         </button>
       </div>
       <div style="margin-top:16px;text-align:right">
@@ -2083,7 +2083,7 @@ function renderFinanceiro(){
         <td>
           <div style="display:flex;gap:6px;flex-wrap:wrap">
             ${!c.paga ? `<button onclick="marcarContaPaga('${c.id}')" style="padding:4px 8px;background:rgba(76,175,80,.15);color:#4caf50;border:1px solid rgba(76,175,80,.3);border-radius:5px;cursor:pointer;font-size:.75rem">✓ Pagar</button>` : `<button onclick="marcarContaPaga('${c.id}')" style="padding:4px 8px;background:#111;color:#666;border:1px solid #222;border-radius:5px;cursor:pointer;font-size:.75rem">↩ Reabrir</button>`}
-            <button onclick="editarConta('${c.id}')" style="padding:4px 8px;background:#222;color:#aaa;border:1px solid #333;border-radius:5px;cursor:pointer;font-size:.75rem">✏️</button>
+            <button onclick="editarConta('${c.id}')" style="padding:4px 8px;background:#222;color:#aaa;border:1px solid #333;border-radius:5px;cursor:pointer;font-size:.75rem">Editar</button>
             <button onclick="deletarConta('${c.id}')" style="padding:4px 8px;background:rgba(229,9,20,.1);color:#e50914;border:1px solid rgba(229,9,20,.3);border-radius:5px;cursor:pointer;font-size:.75rem">✕</button>
           </div>
         </td>
@@ -2105,7 +2105,7 @@ function renderFinanceiro(){
     tbodyC.innerHTML = '<tr><td colspan="6" class="fin-empty">Nenhuma compra registrada</td></tr>';
   } else {
     tbodyC.innerHTML = comprasFilt.map(c => {
-      const priorLabel = {urgente:'🔴 Urgente', normal:'🟡 Normal', baixa:'🟢 Baixa'}[c.prioridade] || 'Normal';
+      const priorLabel = {urgente:'Urgente', normal:'Normal', baixa:'Baixa'}[c.prioridade] || 'Normal';
       const priorBadge = c.comprado ? 'comprado' : (c.prioridade === 'urgente' ? 'urgente' : 'normal');
       const statusLabel = c.comprado ? 'Comprado' : 'Pendente';
       const total = (c.valorEst||0) * (c.qtd||1);
@@ -2118,7 +2118,7 @@ function renderFinanceiro(){
         <td>
           <div style="display:flex;gap:6px;flex-wrap:wrap">
             ${!c.comprado ? `<button onclick="marcarComprado('${c.id}')" style="padding:4px 8px;background:rgba(76,175,80,.15);color:#4caf50;border:1px solid rgba(76,175,80,.3);border-radius:5px;cursor:pointer;font-size:.75rem">✓ Comprado</button>` : `<button onclick="marcarComprado('${c.id}')" style="padding:4px 8px;background:#111;color:#666;border:1px solid #222;border-radius:5px;cursor:pointer;font-size:.75rem">↩ Reabrir</button>`}
-            <button onclick="editarCompra('${c.id}')" style="padding:4px 8px;background:#222;color:#aaa;border:1px solid #333;border-radius:5px;cursor:pointer;font-size:.75rem">✏️</button>
+            <button onclick="editarCompra('${c.id}')" style="padding:4px 8px;background:#222;color:#aaa;border:1px solid #333;border-radius:5px;cursor:pointer;font-size:.75rem">Editar</button>
             <button onclick="deletarCompra('${c.id}')" style="padding:4px 8px;background:rgba(229,9,20,.1);color:#e50914;border:1px solid rgba(229,9,20,.3);border-radius:5px;cursor:pointer;font-size:.75rem">✕</button>
           </div>
         </td>
