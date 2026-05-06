@@ -248,6 +248,22 @@ header.adm{background:#0a0a0a;border-bottom:1px solid var(--border);padding:14px
 .dash-card.orange{--accent:#fb923c;border-color:rgba(251,146,60,.25)}.dash-card.orange .dash-card-val{color:#fb923c}
 .dash-card.green{--accent:#4ade80;border-color:rgba(74,222,128,.2)}.dash-card.green .dash-card-val{color:#4ade80}
 .dash-card.blue{--accent:#60a5fa;border-color:rgba(96,165,250,.2)}.dash-card.blue .dash-card-val{color:#60a5fa}
+.alertas-section{margin-bottom:28px}
+.alertas-title{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:#f59e0b;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.alertas-title svg{flex-shrink:0}
+.alerta-row{display:flex;align-items:center;gap:12px;border-radius:8px;padding:12px 16px;margin-bottom:8px;border:1px solid}
+.alerta-row.vencido{background:rgba(239,83,80,.07);border-color:rgba(239,83,80,.3)}
+.alerta-row.hoje{background:rgba(239,83,80,.05);border-color:rgba(239,83,80,.25)}
+.alerta-row.amanha{background:rgba(245,158,11,.06);border-color:rgba(245,158,11,.25)}
+.alerta-row.dias{background:rgba(245,158,11,.04);border-color:rgba(245,158,11,.15)}
+.alerta-badge{font-family:'Bebas Neue',sans-serif;font-size:12px;padding:3px 10px;border-radius:4px;white-space:nowrap;min-width:72px;text-align:center;letter-spacing:.5px}
+.alerta-badge.vencido{background:#ef5350;color:#fff}
+.alerta-badge.hoje{background:#ef5350;color:#fff}
+.alerta-badge.amanha{background:#f59e0b;color:#000}
+.alerta-badge.dias{background:#2a1f00;color:#f59e0b;border:1px solid #f59e0b44}
+.alerta-info{flex:1;min-width:0}
+.alerta-nome{font-size:13px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.alerta-meta{font-size:11px;color:#666;margin-top:2px}
 .dash-section-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:#fff;margin-bottom:14px;display:flex;align-items:center;gap:10px}
 .dash-section-title span{font-family:inherit;font-size:11px;letter-spacing:1.5px;color:#666;font-weight:400}
 .dash-section{margin-bottom:32px}
@@ -1213,6 +1229,57 @@ function excluirItemEstoque(id){
 }
 
 // ============ DASHBOARD ============
+function parsePrazoMax(str){
+  if(!str || str === '—') return null;
+  const nums = (str.match(/\d+/g) || []).map(Number);
+  return nums.length ? Math.max(...nums) : null;
+}
+
+function calcDiasRestantes(p){
+  const hoje = new Date(); hoje.setHours(0,0,0,0);
+  let maxDias = 0;
+  (p.itens || []).forEach(it => {
+    const d = parsePrazoMax(it.prazo || '');
+    if(d && d > maxDias) maxDias = d;
+  });
+  if(!maxDias) return null;
+  const dataBase = new Date(p.data); dataBase.setHours(0,0,0,0);
+  const previsto = new Date(dataBase); previsto.setDate(previsto.getDate() + maxDias);
+  return Math.ceil((previsto - hoje) / 864e5);
+}
+
+function renderAlertas(){
+  const ativos = ['aguardando','confirmado','producao','pronto'];
+  const itens = pedidos
+    .filter(p => ativos.includes(p.status))
+    .map(p => ({ p, dias: calcDiasRestantes(p) }))
+    .filter(a => a.dias !== null && a.dias <= 3)
+    .sort((a,b) => a.dias - b.dias);
+
+  if(!itens.length) return '';
+
+  const rows = itens.map(({p, dias}) => {
+    let cls, label;
+    if(dias < 0)      { cls='vencido'; label='VENCIDO'; }
+    else if(dias===0) { cls='hoje';    label='HOJE!'; }
+    else if(dias===1) { cls='amanha';  label='AMANHÃ'; }
+    else              { cls='dias';    label=dias+' DIAS'; }
+    return `<div class="alerta-row ${cls}">
+      <div class="alerta-badge ${cls}">${label}</div>
+      <div class="alerta-info">
+        <div class="alerta-nome">${p.cliente.nome||'—'} <span style="color:#555;font-weight:400;font-size:10px">#${p.id}</span></div>
+        <div class="alerta-meta">${(p.itens||[]).length} iten${(p.itens||[]).length!==1?'s':''} · ${formatarMoeda(p.total||0)} · ${(STATUS[p.status]||{}).label||p.status}</div>
+      </div>
+      <button class="debtor-btn" onclick="setAba('pedidos');setTimeout(()=>{const el=document.getElementById('order-${p.id}');if(el){el.scrollIntoView({behavior:'smooth'});el.classList.add('expanded');}},200)">Ver</button>
+    </div>`;
+  }).join('');
+
+  return `<div class="alertas-section">
+    <div class="alertas-title"><svg width="16" height="16" fill="none" stroke="#f59e0b" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>ALERTAS DE PRAZO <span style="font-size:11px;color:#666;font-family:inherit;font-weight:400">(${itens.length})</span></div>
+    ${rows}
+  </div>`;
+}
+
 function renderDashboard(){
   const agora = new Date();
   const devendo = pedidos.filter(p => p.status === 'aguardando');
@@ -1285,7 +1352,7 @@ function renderDashboard(){
     });
   }
   html += '</div>';
-  document.getElementById('dashConteudo').innerHTML = html;
+  document.getElementById('dashConteudo').innerHTML = renderAlertas() + html;
 }
 
 // ============ CLIENTES ============
