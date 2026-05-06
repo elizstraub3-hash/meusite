@@ -396,8 +396,11 @@ header.adm{background:#0a0a0a;border-bottom:1px solid var(--border);padding:14px
     <div class="adm-logo">PRINT HOUSE<span>ADMIN PANEL</span></div>
     <div class="adm-actions">
       <button onclick="abrirNovoPedido()" class="primary">+ Novo Pedido</button>
-      <button onclick="exportarPedidos()" title="Exportar">Exportar</button>
-      <button onclick="document.getElementById('importFileInput').click()" title="Importar pedidos de arquivo JSON">⬆ Importar</button>
+      <button onclick="exportarBackupCompleto()" title="Exportar backup completo">Backup</button>
+      <button onclick="document.getElementById('importBackupInput').click()" title="Restaurar backup completo">Restaurar</button>
+      <input type="file" id="importBackupInput" accept=".json" style="display:none" onchange="importarBackupCompleto(this)">
+      <button onclick="exportarPedidos()" title="Exportar só pedidos" style="font-size:10px;opacity:.6">Exportar pedidos</button>
+      <button onclick="document.getElementById('importFileInput').click()" title="Importar pedidos" style="font-size:10px;opacity:.6">Importar pedidos</button>
       <input type="file" id="importFileInput" accept=".json" style="display:none" onchange="importarPedidos(this)">
       <button onclick="logout()" class="danger">Sair</button>
     </div>
@@ -1998,6 +2001,82 @@ function salvarNovoPedido(){
 }
 
 // ============ EXPORTAR ============
+// ============ BACKUP COMPLETO ============
+function exportarBackupCompleto(){
+  const backup = {
+    versao: '1.0',
+    data: new Date().toISOString(),
+    pedidos: pedidos,
+    clientes: clientes,
+    estoque: estoque,
+    financeiro: JSON.parse(localStorage.getItem('ph_financeiro') || 'null')
+  };
+  const blob = new Blob([JSON.stringify(backup, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `backup-printhouse-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Backup completo exportado!');
+}
+
+function importarBackupCompleto(input){
+  const file = input.files[0];
+  if(!file) return;
+  input.value = '';
+  const reader = new FileReader();
+  reader.onload = function(e){
+    let backup;
+    try { backup = JSON.parse(e.target.result); } catch(err){
+      showToast('Arquivo inválido'); return;
+    }
+    const temPedidos = Array.isArray(backup.pedidos);
+    const temClientes = Array.isArray(backup.clientes);
+    const temEstoque = Array.isArray(backup.estoque);
+    if(!temPedidos && !temClientes && !temEstoque){
+      showToast('Arquivo não é um backup válido'); return;
+    }
+    const dataBackup = backup.data ? new Date(backup.data).toLocaleString('pt-BR') : 'desconhecida';
+    _backupPendente = backup;
+    const overlay = document.createElement('div');
+    overlay.id = 'backupModal';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:9999;display:flex;align-items:center;justify-content:center';
+    overlay.innerHTML = `
+      <div style="background:#111;border:1px solid #333;border-radius:12px;padding:28px;max-width:440px;width:90%;color:#e0e0e0">
+        <h3 style="margin:0 0 16px;color:#fff;font-size:1.1rem">Restaurar Backup</h3>
+        <p style="margin:0 0 6px;font-size:.85rem;color:#666">Data do backup: <strong style="color:#aaa">${dataBackup}</strong></p>
+        <ul style="margin:0 0 18px;padding-left:18px;font-size:.9rem;color:#aaa;line-height:2">
+          <li>Pedidos: <strong style="color:#fff">${(backup.pedidos||[]).length}</strong></li>
+          <li>Clientes: <strong style="color:#fff">${(backup.clientes||[]).length}</strong></li>
+          <li>Itens de estoque: <strong style="color:#fff">${(backup.estoque||[]).length}</strong></li>
+          <li>Financeiro: <strong style="color:#fff">${backup.financeiro ? 'incluído' : 'não incluído'}</strong></li>
+        </ul>
+        <p style="margin:0 0 20px;font-size:.85rem;color:#fb923c;background:rgba(251,146,60,.1);border:1px solid rgba(251,146,60,.25);border-radius:6px;padding:10px">Isso vai <strong>substituir todos os dados atuais</strong> do painel pelos dados do backup.</p>
+        <div style="display:flex;gap:10px;justify-content:flex-end">
+          <button onclick="document.getElementById('backupModal').remove()" style="padding:10px 20px;background:#222;border:1px solid #444;color:#fff;border-radius:6px;cursor:pointer;font-family:inherit">Cancelar</button>
+          <button onclick="confirmarRestaurarBackup()" style="padding:10px 24px;background:#e50914;border:none;color:#fff;border-radius:6px;cursor:pointer;font-family:inherit;font-weight:700">Restaurar agora</button>
+        </div>
+      </div>`;
+    document.body.appendChild(overlay);
+  };
+  reader.readAsText(file, 'UTF-8');
+}
+
+let _backupPendente = null;
+function confirmarRestaurarBackup(){
+  const backup = _backupPendente;
+  _backupPendente = null;
+  document.getElementById('backupModal')?.remove();
+  if(!backup) return;
+  if(Array.isArray(backup.pedidos)){ pedidos = backup.pedidos; localStorage.setItem('ph_pedidos', JSON.stringify(pedidos)); }
+  if(Array.isArray(backup.clientes)){ clientes = backup.clientes; localStorage.setItem('ph_clientes', JSON.stringify(clientes)); }
+  if(Array.isArray(backup.estoque)){ estoque = backup.estoque; localStorage.setItem('ph_estoque', JSON.stringify(estoque)); }
+  if(backup.financeiro){ localStorage.setItem('ph_financeiro', JSON.stringify(backup.financeiro)); }
+  render(); renderDashboard();
+  showToast('Backup restaurado com sucesso!');
+}
+
 function exportarPedidos(){
   if(pedidos.length === 0){
     showToast('Nenhum pedido para exportar');
