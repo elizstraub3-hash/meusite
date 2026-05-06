@@ -742,13 +742,22 @@ header.adm{background:#0a0a0a;border-bottom:1px solid var(--border);padding:14px
       </div>
       <div class="np-section">
         <div class="est-grid-3">
-          <div><span class="np-label">Qtd atual *</span><input type="number" class="np-input" id="estQtd" placeholder="0" min="0" step="0.01"></div>
+          <div><span class="np-label">Qtd atual *</span><input type="number" class="np-input" id="estQtd" placeholder="0" min="0" step="0.01" oninput="calcCustoUnit()"></div>
           <div><span class="np-label">Qtd mínima</span><input type="number" class="np-input" id="estQtdMin" placeholder="0" min="0" step="0.01"></div>
-          <div><span class="np-label">Custo unitário (R$) *</span><input type="number" class="np-input" id="estCusto" placeholder="0,00" min="0" step="0.01" oninput="calcMargemModal()"></div>
+          <div>
+            <span class="np-label">Valor total pago (R$)</span>
+            <input type="number" class="np-input" id="estValorTotal" placeholder="Ex: 50,00" min="0" step="0.01" oninput="calcCustoUnit()">
+            <span style="font-size:10px;color:#555;margin-top:3px;display:block">Preencha + qtd para calcular unit.</span>
+          </div>
         </div>
       </div>
       <div class="np-section">
-        <div class="est-grid-2">
+        <div class="est-grid-3">
+          <div>
+            <span class="np-label">Custo unitário (R$)</span>
+            <input type="number" class="np-input" id="estCusto" placeholder="0,00" min="0" step="0.01" oninput="calcMargemModal()">
+            <span style="font-size:10px;color:#555;margin-top:3px;display:block" id="estCustoHint"></span>
+          </div>
           <div><span class="np-label">Preço de venda (R$)</span><input type="number" class="np-input" id="estPreco" placeholder="0,00" min="0" step="0.01" oninput="calcMargemModal()"></div>
           <div><span class="np-label">Margem estimada</span><div class="np-input" id="estMargemDisplay" style="display:flex;align-items:center;color:#888;font-family:'Bebas Neue';font-size:20px">—</div></div>
         </div>
@@ -1175,10 +1184,11 @@ let _estEditandoId = null;
 function abrirNovoItemEstoque(){
   _estEditandoId = null;
   document.getElementById('estModalTitle').textContent = 'Novo Item de Estoque';
-  ['estNome','estQtd','estQtdMin','estCusto','estPreco','estObs'].forEach(id => document.getElementById(id).value = '');
+  ['estNome','estQtd','estQtdMin','estCusto','estPreco','estObs','estValorTotal'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('estUnidade').value = 'resma';
   document.getElementById('estMargemDisplay').textContent = '—';
   document.getElementById('estMargemDisplay').style.color = '#888';
+  document.getElementById('estCustoHint').textContent = '';
   document.getElementById('estModalBg').classList.add('show');
 }
 function editarItemEstoque(id){
@@ -1190,12 +1200,27 @@ function editarItemEstoque(id){
   document.getElementById('estQtd').value = it.qtdAtual;
   document.getElementById('estQtdMin').value = it.qtdMin || '';
   document.getElementById('estCusto').value = it.custoUnit;
+  document.getElementById('estValorTotal').value = '';
+  document.getElementById('estCustoHint').textContent = '';
   document.getElementById('estPreco').value = it.precoVenda || '';
   document.getElementById('estObs').value = it.obs || '';
   calcMargemModal();
   document.getElementById('estModalBg').classList.add('show');
 }
 function fecharModalEstoque(){ document.getElementById('estModalBg').classList.remove('show'); }
+function calcCustoUnit(){
+  const qtd = parseFloat(document.getElementById('estQtd').value) || 0;
+  const total = parseFloat(document.getElementById('estValorTotal').value) || 0;
+  const hint = document.getElementById('estCustoHint');
+  if(qtd > 0 && total > 0){
+    const unit = total / qtd;
+    document.getElementById('estCusto').value = unit.toFixed(4);
+    if(hint) hint.textContent = 'Calculado: R$ ' + total.toFixed(2).replace('.',',') + ' ÷ ' + qtd + ' un.';
+    calcMargemModal();
+  } else {
+    if(hint) hint.textContent = '';
+  }
+}
 function calcMargemModal(){
   const custo = parseFloat(document.getElementById('estCusto').value) || 0;
   const venda = parseFloat(document.getElementById('estPreco').value) || 0;
