@@ -1445,26 +1445,37 @@ function closeStatusModal(){
 }
 
 // Mensagens automáticas por status
+const _SEP = '━━━━━━━━━━━━━━━';
+
 function _listaItensMsg(p){
   return p.itens.map(it => {
     const sub = ((it.preco||0) * (it.qty||1)) + (it.arteValor||0);
     const val = it.orc ? 'Sob orçamento' : 'R$ ' + sub.toFixed(2).replace('.',',');
-    return `▪️ ${it.qty}× *${it.nome}*\n   ${it.variacao} — ${val}`;
-  }).join('\n');
+    const prod = CATALOGO_PRODUTOS.find(cp => cp.nome === it.nome);
+    const prazo = it.prazo || (prod ? prod.prazo : '');
+    const varLine = it.variacao && it.variacao !== 'Padrão' && it.variacao !== '—' ? ` em ${it.variacao}` : '';
+    return `• ${it.qty}x ${it.nome}${varLine}\n💰 ${val}${prazo ? '\n⏳ Produção: ' + prazo : ''}`;
+  }).join('\n\n');
 }
 
 const MENSAGENS_STATUS = {
-  aguardando: (p) => `Olá ${p.cliente.nome}!\n\nRecebemos seu pedido *#${p.id}* na Print House!\n\n*Itens do pedido:*\n${_listaItensMsg(p)}\n\n*Total:* ${p.hasOrc && p.total === 0 ? 'Sob orçamento' : formatarMoeda(p.total)}\n*Pagamento:* ${p.pagamento}\n\nEstamos *aguardando a confirmação do pagamento* para iniciar a produção.\n\nAssim que confirmarmos, você receberá uma nova mensagem. Qualquer dúvida, é só chamar aqui!`,
+  aguardando: (p) => {
+    const total = p.hasOrc && p.total === 0 ? 'Sob orçamento' : '💵 Total: ' + formatarMoeda(p.total);
+    return `Olá, ${p.cliente.nome}! 💖\n\nSeu pedido foi recebido com sucesso na Print House Gráfica Online! 🖨️✨\n\n📌 Pedido: #${p.id}\n\n${_SEP}\n\n🛍️ Itens do pedido\n\n${_listaItensMsg(p)}\n\n${_SEP}\n\n${total}\n\n💳 Pagamento: ${p.pagamento}\n\n📦 O prazo total considera o item com maior tempo de produção.\n\n💬 Assim que seu pedido avançar, você receberá novas atualizações automaticamente!\n\n✨ Obrigado por escolher a Print House!`;
+  },
 
-  confirmado: (p) => `Olá ${p.cliente.nome}! Tudo bem?\n\nSeu pedido *#${p.id}* foi *CONFIRMADO* na Print House!\n\n*Itens do pedido:*\n${_listaItensMsg(p)}\n\n*Total:* ${p.hasOrc && p.total === 0 ? 'Sob orçamento' : formatarMoeda(p.total)}\n*Entrega:* ${p.entrega}\n*Pagamento:* ${p.pagamento}\n\nJá iniciamos os procedimentos do seu pedido. Qualquer dúvida estamos aqui!`,
+  confirmado: (p) => {
+    const total = p.hasOrc && p.total === 0 ? 'Sob orçamento' : '💵 Total: ' + formatarMoeda(p.total);
+    return `Olá, ${p.cliente.nome}! 🎉\n\nSeu pagamento foi *CONFIRMADO* e o pedido *#${p.id}* já está nos nossos registros!\n\n${_SEP}\n\n🛍️ Itens do pedido\n\n${_listaItensMsg(p)}\n\n${_SEP}\n\n${total}\n\n📦 Entrega: ${p.entrega}\n💳 Pagamento: ${p.pagamento}\n\nEm breve seu pedido entra em produção. Qualquer dúvida é só chamar! 😊\n\n✨ Obrigado por escolher a Print House!`;
+  },
 
-  producao: (p) => `Olá ${p.cliente.nome}!\n\nBoas notícias! Seu pedido *#${p.id}* entrou em *PRODUÇÃO* agora.\n\n*Itens em produção:*\n${_listaItensMsg(p)}\n\n*Total:* ${formatarMoeda(p.total)}\n\nEm breve te aviso quando estiver pronto. Obrigada pela confiança!`,
+  producao: (p) => `Olá, ${p.cliente.nome}! 🎨\n\nBoas notícias! Seu pedido *#${p.id}* acabou de entrar em *PRODUÇÃO*!\n\n${_SEP}\n\n🛍️ Itens em produção\n\n${_listaItensMsg(p)}\n\n${_SEP}\n\n⏳ Em breve ficará pronto. Assim que estiver, você receberá uma nova mensagem.\n\n✨ Obrigado pela confiança na Print House!`,
 
-  pronto: (p) => `Olá ${p.cliente.nome}!\n\nSeu pedido *#${p.id}* está *PRONTO*!\n\n*Itens prontos:*\n${_listaItensMsg(p)}\n\n*Total:* ${formatarMoeda(p.total)}\n*Entrega:* ${p.entrega}\n\nPodemos combinar a ${p.entrega && p.entrega.includes('Retirada') ? 'retirada' : 'entrega'}? Estou à disposição!`,
+  pronto: (p) => `Olá, ${p.cliente.nome}! ✅\n\nSeu pedido *#${p.id}* está *PRONTO*! 🎉\n\n${_SEP}\n\n🛍️ Itens prontos\n\n${_listaItensMsg(p)}\n\n${_SEP}\n\n📦 Entrega: ${p.entrega}\n💵 Total: ${formatarMoeda(p.total)}\n\nVamos combinar os detalhes? Estou à disposição! 😊\n\n✨ Obrigado por escolher a Print House!`,
 
-  entregue: (p) => `Olá ${p.cliente.nome}!\n\nQue bom que recebeu seu pedido *#${p.id}*!\n\nMuito obrigada por escolher a Print House. Adoraríamos saber sua opinião sobre o produto. Sua avaliação é muito importante para nós!\n\nE não esquece: para próximas compras, estou sempre à disposição.`,
+  entregue: (p) => `Olá, ${p.cliente.nome}! 💖\n\nQue alegria saber que você recebeu seu pedido *#${p.id}*! \n\nFicamos muito felizes em atendê-lo! Se puder, nos conta o que achou do produto — sua opinião é muito importante para a gente! ⭐\n\nPara próximas compras, estamos sempre à disposição!\n\n✨ Obrigado por escolher a Print House!`,
 
-  cancelado: (p) => `Olá ${p.cliente.nome},\n\nInformamos que seu pedido *#${p.id}* foi *CANCELADO*.\n\nSe houver dúvidas ou se quiser fazer um novo pedido, é só chamar aqui no WhatsApp. Estamos sempre à disposição.`
+  cancelado: (p) => `Olá, ${p.cliente.nome}.\n\nInformamos que seu pedido *#${p.id}* foi *CANCELADO*.\n\nSe houver dúvidas ou se quiser fazer um novo pedido, é só chamar aqui no WhatsApp. Estamos sempre à disposição.\n\nPrint House Gráfica Online`
 };
 
 function mudarStatus(novo){
