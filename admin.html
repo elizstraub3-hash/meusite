@@ -1312,31 +1312,44 @@ function renderDashboard(){
   const agora = new Date();
   const devendo = pedidos.filter(p => p.status === 'aguardando');
   const andamento = pedidos.filter(p => ['confirmado','producao','pronto'].includes(p.status));
+
+  // Em aberto = todos os pedidos ativos (ainda não entregues nem cancelados)
+  const ativos = pedidos.filter(p => !['entregue','cancelado'].includes(p.status));
+  const totalEmAberto = ativos.reduce((s,p) => s+(p.total||0), 0);
+
+  // Faturamento do mês = pedidos entregues no mês atual
   const faturadoMes = pedidos
-    .filter(p => { const d=new Date(p.data); return d.getMonth()===agora.getMonth()&&d.getFullYear()===agora.getFullYear()&&p.status!=='cancelado'; })
+    .filter(p => { const d=new Date(p.data); return d.getMonth()===agora.getMonth()&&d.getFullYear()===agora.getFullYear()&&p.status==='entregue'; })
     .reduce((s,p) => s+(p.total||0), 0);
-  const totalDevendo = devendo.reduce((s,p) => s+(p.total||0), 0);
+
+  // Total geral = todos os pedidos entregues (dinheiro efetivamente recebido)
+  const totalGeral = pedidos
+    .filter(p => p.status === 'entregue')
+    .reduce((s,p) => s+(p.total||0), 0);
+
+  // Total andamento (confirmado+producao+pronto)
+  const totalAndamento = andamento.reduce((s,p) => s+(p.total||0), 0);
 
   document.getElementById('dashCards').innerHTML = `
     <div class="dash-card red">
       <div class="dash-card-lbl">Aguardando Pagamento</div>
       <div class="dash-card-val">${devendo.length}</div>
-      <div class="dash-card-sub">Em aberto: ${formatarMoeda(totalDevendo)}</div>
+      <div class="dash-card-sub">Em aberto (todos ativos): ${formatarMoeda(totalEmAberto)}</div>
     </div>
     <div class="dash-card orange">
       <div class="dash-card-lbl">Em Andamento</div>
       <div class="dash-card-val">${andamento.length}</div>
-      <div class="dash-card-sub">Confirmado · Produção · Pronto</div>
+      <div class="dash-card-sub">A receber: ${formatarMoeda(totalAndamento)}</div>
     </div>
     <div class="dash-card green">
-      <div class="dash-card-lbl">Faturamento do Mês</div>
+      <div class="dash-card-lbl">Entregues este mês</div>
       <div class="dash-card-val">${formatarMoeda(faturadoMes)}</div>
       <div class="dash-card-sub">${agora.toLocaleString('pt-BR',{month:'long',year:'numeric'})}</div>
     </div>
     <div class="dash-card blue">
-      <div class="dash-card-lbl">Clientes</div>
-      <div class="dash-card-val">${clientes.length}</div>
-      <div class="dash-card-sub">Total de pedidos: ${pedidos.length}</div>
+      <div class="dash-card-lbl">Total Geral Recebido</div>
+      <div class="dash-card-val">${formatarMoeda(totalGeral)}</div>
+      <div class="dash-card-sub">${pedidos.filter(p=>p.status==='entregue').length} pedidos entregues</div>
     </div>`;
 
   let html = `<div class="dash-section">
