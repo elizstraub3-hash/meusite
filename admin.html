@@ -187,6 +187,18 @@ header.adm{background:#0a0a0a;border-bottom:1px solid var(--border);padding:14px
 .s-entregue{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.3)}
 .s-cancelado{background:rgba(255,107,107,.15);color:#ff6b6b;border:1px solid rgba(255,107,107,.3)}
 .s-aguardando{background:rgba(251,146,60,.15);color:#fb923c;border:1px solid rgba(251,146,60,.3)}
+.s-pedido-recebido{background:rgba(250,204,21,.15);color:#facc15;border:1px solid rgba(250,204,21,.3)}
+.s-aguardando-pgto{background:rgba(251,146,60,.15);color:#fb923c;border:1px solid rgba(251,146,60,.3)}
+.s-pagamento-confirmado{background:rgba(74,222,128,.15);color:#4ade80;border:1px solid rgba(74,222,128,.3)}
+.s-em-criacao{background:rgba(192,132,252,.15);color:#c084fc;border:1px solid rgba(192,132,252,.3)}
+.s-aguardando-aprovacao{background:rgba(96,165,250,.15);color:#60a5fa;border:1px solid rgba(96,165,250,.3)}
+.s-em-producao{background:rgba(168,85,247,.2);color:#a855f7;border:1px solid rgba(168,85,247,.4)}
+.s-em-acabamento{background:rgba(45,212,191,.15);color:#2dd4bf;border:1px solid rgba(45,212,191,.3)}
+.s-pedido-finalizado{background:rgba(52,211,153,.15);color:#34d399;border:1px solid rgba(52,211,153,.3)}
+.s-saiu-entrega{background:rgba(56,189,248,.15);color:#38bdf8;border:1px solid rgba(56,189,248,.3)}
+.s-aguardando-material{background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.3)}
+.s-pedido-pendencia{background:rgba(248,113,113,.15);color:#f87171;border:1px solid rgba(248,113,113,.3)}
+.s-reimpressao{background:rgba(253,186,116,.15);color:#fdba74;border:1px solid rgba(253,186,116,.3)}
 .toggle-arrow{transition:.2s;color:#888}
 .order.expanded .toggle-arrow{transform:rotate(180deg)}
 
@@ -706,12 +718,20 @@ header.adm{background:#0a0a0a;border-bottom:1px solid var(--border);padding:14px
       <div class="np-section">
         <span class="np-label">Status Inicial</span>
         <select class="np-select" id="npStatus">
-          <option value="novo">Novo</option>
-          <option value="aguardando">Aguardando Pagamento</option>
-          <option value="confirmado">Confirmado</option>
-          <option value="producao">Em Produção</option>
-          <option value="pronto">Pronto</option>
-          <option value="entregue">Entregue</option>
+          <option value="pedido_recebido">🟡 Pedido Recebido</option>
+          <option value="aguardando_pagamento">💳 Aguardando Pagamento</option>
+          <option value="pagamento_confirmado">✅ Pagamento Confirmado</option>
+          <option value="em_criacao">🎨 Em Criação / Arte em Produção</option>
+          <option value="aguardando_aprovacao">👀 Aguardando Aprovação da Arte</option>
+          <option value="em_producao">🖨️ Em Produção</option>
+          <option value="em_acabamento">✂️ Em Acabamento</option>
+          <option value="pedido_finalizado">📦 Pedido Finalizado</option>
+          <option value="saiu_entrega">🚚 Saiu para Entrega</option>
+          <option value="entregue">✅ Entregue</option>
+          <option value="aguardando_material">⚠️ Aguardando Material</option>
+          <option value="pedido_pendencia">🛑 Pedido com Pendência</option>
+          <option value="reimpressao">🔄 Reimpressão</option>
+          <option value="cancelado">❌ Cancelado</option>
         </select>
       </div>
 
@@ -843,13 +863,27 @@ header.adm{background:#0a0a0a;border-bottom:1px solid var(--border);padding:14px
 const ADMIN_PASS = 'eliza2026';
 
 const STATUS = {
-  novo: {label:'Novo', class:'s-novo'},
-  aguardando: {label:'Aguardando Pagamento', class:'s-aguardando'},
-  confirmado: {label:'Confirmado', class:'s-confirmado'},
-  producao: {label:'Produção', class:'s-producao'},
-  pronto: {label:'Pronto', class:'s-pronto'},
-  entregue: {label:'Entregue', class:'s-entregue'},
-  cancelado: {label:'Cancelado', class:'s-cancelado'}
+  // Fluxo profissional
+  pedido_recebido:      {label:'Pedido Recebido',              class:'s-pedido-recebido',    emoji:'🟡'},
+  aguardando_pagamento: {label:'Aguardando Pagamento',         class:'s-aguardando-pgto',    emoji:'💳'},
+  pagamento_confirmado: {label:'Pagamento Confirmado',         class:'s-pagamento-confirmado',emoji:'✅'},
+  em_criacao:           {label:'Em Criação / Arte em Produção',class:'s-em-criacao',         emoji:'🎨'},
+  aguardando_aprovacao: {label:'Aguardando Aprovação da Arte', class:'s-aguardando-aprovacao',emoji:'👀'},
+  em_producao:          {label:'Em Produção',                  class:'s-em-producao',        emoji:'🖨️'},
+  em_acabamento:        {label:'Em Acabamento',                class:'s-em-acabamento',      emoji:'✂️'},
+  pedido_finalizado:    {label:'Pedido Finalizado',            class:'s-pedido-finalizado',  emoji:'📦'},
+  saiu_entrega:         {label:'Saiu para Entrega',            class:'s-saiu-entrega',       emoji:'🚚'},
+  entregue:             {label:'Entregue',                     class:'s-entregue',           emoji:'✅'},
+  aguardando_material:  {label:'Aguardando Material',          class:'s-aguardando-material',emoji:'⚠️'},
+  pedido_pendencia:     {label:'Pedido com Pendência',         class:'s-pedido-pendencia',   emoji:'🛑'},
+  reimpressao:          {label:'Reimpressão',                  class:'s-reimpressao',        emoji:'🔄'},
+  cancelado:            {label:'Cancelado',                    class:'s-cancelado',          emoji:'❌'},
+  // Legados (pedidos antigos — não aparecem no seletor)
+  novo:       {label:'Novo',                  class:'s-novo',      legacy:true},
+  aguardando: {label:'Aguardando Pagamento',  class:'s-aguardando',legacy:true},
+  confirmado: {label:'Confirmado',            class:'s-confirmado',legacy:true},
+  producao:   {label:'Produção',              class:'s-producao',  legacy:true},
+  pronto:     {label:'Pronto',               class:'s-pronto',    legacy:true},
 };
 
 let pedidos = [];
@@ -1310,46 +1344,56 @@ function renderAlertas(){
 
 function renderDashboard(){
   const agora = new Date();
-  const devendo = pedidos.filter(p => p.status === 'aguardando');
-  const andamento = pedidos.filter(p => ['confirmado','producao','pronto'].includes(p.status));
 
-  // Em aberto = todos os pedidos ativos (ainda não entregues nem cancelados)
-  const ativos = pedidos.filter(p => !['entregue','cancelado'].includes(p.status));
-  const totalEmAberto = ativos.reduce((s,p) => s+(p.total||0), 0);
+  // Statuses que indicam pagamento já confirmado (receita)
+  const STATUSES_PAGOS = ['pagamento_confirmado','em_criacao','aguardando_aprovacao','em_producao','em_acabamento','pedido_finalizado','saiu_entrega','entregue','reimpressao','confirmado','producao','pronto'];
 
-  // Faturamento do mês = pedidos entregues no mês atual
-  const faturadoMes = pedidos
-    .filter(p => { const d=new Date(p.data); return d.getMonth()===agora.getMonth()&&d.getFullYear()===agora.getFullYear()&&p.status==='entregue'; })
+  // Aguardando pagamento
+  const devendo = pedidos.filter(p => p.status === 'aguardando_pagamento' || p.status === 'aguardando');
+
+  // Em andamento = pagamento confirmado até entregue (excluindo entregue e cancelado)
+  const andamento = pedidos.filter(p => ['pagamento_confirmado','em_criacao','aguardando_aprovacao','em_producao','em_acabamento','pedido_finalizado','saiu_entrega','reimpressao','confirmado','producao','pronto'].includes(p.status));
+
+  // Receita confirmada = todos pedidos com pagamento já confirmado (incluindo entregues)
+  const receitaConfirmada = pedidos
+    .filter(p => STATUSES_PAGOS.includes(p.status))
     .reduce((s,p) => s+(p.total||0), 0);
 
-  // Total geral = todos os pedidos entregues (dinheiro efetivamente recebido)
-  const totalGeral = pedidos
-    .filter(p => p.status === 'entregue')
+  // Total geral de TODOS os pedidos (todos os status, exceto cancelado)
+  const totalTodos = pedidos
+    .filter(p => p.status !== 'cancelado')
     .reduce((s,p) => s+(p.total||0), 0);
 
-  // Total andamento (confirmado+producao+pronto)
+  // Total andamento
   const totalAndamento = andamento.reduce((s,p) => s+(p.total||0), 0);
+
+  // Entregues este mês
+  const entreguesMes = pedidos.filter(p => {
+    const d = new Date(p.data);
+    return p.status === 'entregue' && d.getMonth() === agora.getMonth() && d.getFullYear() === agora.getFullYear();
+  });
+  const faturadoMes = entreguesMes.reduce((s,p) => s+(p.total||0), 0);
 
   document.getElementById('dashCards').innerHTML = `
     <div class="dash-card red">
       <div class="dash-card-lbl">Aguardando Pagamento</div>
       <div class="dash-card-val">${devendo.length}</div>
-      <div class="dash-card-sub">Em aberto (todos ativos): ${formatarMoeda(totalEmAberto)}</div>
+      <div class="dash-card-sub">Valor pendente: ${formatarMoeda(devendo.reduce((s,p)=>s+(p.total||0),0))}</div>
     </div>
     <div class="dash-card orange">
       <div class="dash-card-lbl">Em Andamento</div>
       <div class="dash-card-val">${andamento.length}</div>
-      <div class="dash-card-sub">A receber: ${formatarMoeda(totalAndamento)}</div>
+      <div class="dash-card-sub">Em produção: ${formatarMoeda(totalAndamento)}</div>
     </div>
     <div class="dash-card green">
-      <div class="dash-card-lbl">Entregues este mês</div>
-      <div class="dash-card-val">${formatarMoeda(faturadoMes)}</div>
-      <div class="dash-card-sub">${agora.toLocaleString('pt-BR',{month:'long',year:'numeric'})}</div>
+      <div class="dash-card-lbl">Receita Confirmada</div>
+      <div class="dash-card-val">${formatarMoeda(receitaConfirmada)}</div>
+      <div class="dash-card-sub">Pago + em andamento pago</div>
     </div>
     <div class="dash-card blue">
-      <div class="dash-card-lbl">Total Geral Recebido</div>
-      <div class="dash-card-val">${formatarMoeda(totalGeral)}</div>
-      <div class="dash-card-sub">${pedidos.filter(p=>p.status==='entregue').length} pedidos entregues</div>
+      <div class="dash-card-lbl">Total Geral (todos pedidos)</div>
+      <div class="dash-card-val">${formatarMoeda(totalTodos)}</div>
+      <div class="dash-card-sub">${pedidos.filter(p=>p.status!=='cancelado').length} pedidos ativos</div>
     </div>`;
 
   let html = `<div class="dash-section">
@@ -1358,8 +1402,8 @@ function renderDashboard(){
     html += `<div class="dash-empty">Nenhum pedido aguardando pagamento</div>`;
   } else {
     devendo.sort((a,b)=>new Date(a.data)-new Date(b.data)).forEach(p => {
-      const fone=(p.cliente.fone||'').replace(/\D/g,'');
       const dias=Math.floor((Date.now()-new Date(p.data))/(864e5));
+      const statusKey = p.status === 'aguardando' ? 'aguardando_pagamento' : p.status;
       html+=`<div class="debtor-row${dias>=2?' atrasado':''}">
         <div class="debtor-info">
           <div class="debtor-nome">${p.cliente.nome||'—'} <span style="color:#555;font-size:10px">#${p.id}</span></div>
@@ -1367,7 +1411,7 @@ function renderDashboard(){
         </div>
         <div class="debtor-val">${formatarMoeda(p.total||0)}</div>
         <div class="debtor-actions">
-          <button class="debtor-btn wpp" onclick="enviarMensagemStatus('${p.id}','aguardando')" title="Cobrar">
+          <button class="debtor-btn wpp" onclick="enviarMensagemStatus('${p.id}','${statusKey}')" title="Cobrar">
             <svg width="11" height="11" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347M12 21.785A9.78 9.78 0 1112 2.22a9.78 9.78 0 010 19.566z"/></svg>
             Cobrar
           </button>
@@ -1382,7 +1426,7 @@ function renderDashboard(){
     html += `<div class="dash-empty">Nenhum pedido em andamento.</div>`;
   } else {
     andamento.sort((a,b)=>new Date(a.data)-new Date(b.data)).forEach(p => {
-      const st=STATUS[p.status]||STATUS.novo;
+      const st=STATUS[p.status]||STATUS.pedido_recebido;
       html+=`<div class="andamento-row">
         <div class="andamento-id">#${p.id}</div>
         <div class="andamento-nome">${p.cliente.nome||'—'}</div>
@@ -1538,8 +1582,9 @@ function abrirStatusModal(id){
   pedidoEditando = id;
   let html = '';
   Object.entries(STATUS).forEach(([key, val]) => {
+    if(val.legacy) return;
     html += `<button class="status-opt" onclick="mudarStatus('${key}')">
-      ${val.label}
+      ${val.emoji || ''} ${val.label}
       <span class="badge-mini ${val.class}">${val.label}</span>
     </button>`;
   });
@@ -1567,23 +1612,49 @@ function _listaItensMsg(p){
 }
 
 const MENSAGENS_STATUS = {
-  aguardando: (p) => {
+  // Novo fluxo
+  pedido_recebido: (p) => {
     const total = p.hasOrc && p.total === 0 ? 'Sob orçamento' : '💵 Total: ' + formatarMoeda(p.total);
     return `Olá, ${p.cliente.nome}! 💖\n\nSeu pedido foi recebido com sucesso na Print House Gráfica Online! 🖨️✨\n\n📌 Pedido: #${p.id}\n\n${_SEP}\n\n🛍️ Itens do pedido\n\n${_listaItensMsg(p)}\n\n${_SEP}\n\n${total}\n\n💳 Pagamento: ${p.pagamento}\n\n📦 O prazo total considera o item com maior tempo de produção.\n\n💬 Assim que seu pedido avançar, você receberá novas atualizações automaticamente!\n\n✨ Obrigado por escolher a Print House!`;
   },
 
-  confirmado: (p) => {
+  aguardando_pagamento: (p) => {
+    const total = p.hasOrc && p.total === 0 ? 'Sob orçamento' : '💵 Total: ' + formatarMoeda(p.total);
+    return `Olá, ${p.cliente.nome}! 💖\n\nSeu pedido foi recebido com sucesso na Print House Gráfica Online! 🖨️✨\n\n📌 Pedido: #${p.id}\n\n${_SEP}\n\n🛍️ Itens do pedido\n\n${_listaItensMsg(p)}\n\n${_SEP}\n\n${total}\n\n💳 Forma de pagamento: ${p.pagamento}\n\n⚠️ Assim que o pagamento for confirmado, daremos início ao seu pedido!\n\n📦 O prazo total considera o item com maior tempo de produção.\n\n✨ Obrigado por escolher a Print House!`;
+  },
+
+  pagamento_confirmado: (p) => {
     const total = p.hasOrc && p.total === 0 ? 'Sob orçamento' : '💵 Total: ' + formatarMoeda(p.total);
     return `Olá, ${p.cliente.nome}! 🎉\n\nSeu pagamento foi *CONFIRMADO* e o pedido *#${p.id}* já está nos nossos registros!\n\n${_SEP}\n\n🛍️ Itens do pedido\n\n${_listaItensMsg(p)}\n\n${_SEP}\n\n${total}\n\n📦 Entrega: ${p.entrega}\n💳 Pagamento: ${p.pagamento}\n\nEm breve seu pedido entra em produção. Qualquer dúvida é só chamar! 😊\n\n✨ Obrigado por escolher a Print House!`;
   },
 
-  producao: (p) => `Olá, ${p.cliente.nome}! 🎨\n\nBoas notícias! Seu pedido *#${p.id}* acabou de entrar em *PRODUÇÃO*!\n\n${_SEP}\n\n🛍️ Itens em produção\n\n${_listaItensMsg(p)}\n\n${_SEP}\n\n⏳ Em breve ficará pronto. Assim que estiver, você receberá uma nova mensagem.\n\n✨ Obrigado pela confiança na Print House!`,
+  em_criacao: (p) => `Olá, ${p.cliente.nome}! 🎨\n\nSeu pedido *#${p.id}* está em *CRIAÇÃO / ARTE EM PRODUÇÃO*!\n\nNossa equipe está desenvolvendo a arte do seu material com carinho. Em breve você receberá a arte para aprovação.\n\n${_SEP}\n\n🛍️ Itens\n\n${_listaItensMsg(p)}\n\n${_SEP}\n\nQualquer dúvida é só chamar! 😊\n\n✨ Print House Gráfica Online`,
 
-  pronto: (p) => `Olá, ${p.cliente.nome}! ✅\n\nSeu pedido *#${p.id}* está *PRONTO*! 🎉\n\n${_SEP}\n\n🛍️ Itens prontos\n\n${_listaItensMsg(p)}\n\n${_SEP}\n\n📦 Entrega: ${p.entrega}\n💵 Total: ${formatarMoeda(p.total)}\n\nVamos combinar os detalhes? Estou à disposição! 😊\n\n✨ Obrigado por escolher a Print House!`,
+  aguardando_aprovacao: (p) => `Olá, ${p.cliente.nome}! 👀\n\nA arte do seu pedido *#${p.id}* está pronta e *AGUARDANDO SUA APROVAÇÃO*!\n\nPor favor, verifique os detalhes e nos informe se aprova ou se deseja alguma alteração.\n\n${_SEP}\n\n🛍️ Itens\n\n${_listaItensMsg(p)}\n\n${_SEP}\n\n⏳ Após sua aprovação, daremos início à produção imediatamente!\n\n✨ Print House Gráfica Online`,
 
-  entregue: (p) => `Olá, ${p.cliente.nome}! 💖\n\nQue alegria saber que você recebeu seu pedido *#${p.id}*! \n\nFicamos muito felizes em atendê-lo! Se puder, nos conta o que achou do produto — sua opinião é muito importante para a gente! ⭐\n\nPara próximas compras, estamos sempre à disposição!\n\n✨ Obrigado por escolher a Print House!`,
+  em_producao: (p) => `Olá, ${p.cliente.nome}! 🖨️\n\nBoas notícias! Seu pedido *#${p.id}* acabou de entrar em *PRODUÇÃO*!\n\n${_SEP}\n\n🛍️ Itens em produção\n\n${_listaItensMsg(p)}\n\n${_SEP}\n\n⏳ Em breve ficará pronto. Assim que estiver, você receberá uma nova mensagem.\n\n✨ Obrigado pela confiança na Print House!`,
 
-  cancelado: (p) => `Olá, ${p.cliente.nome}.\n\nInformamos que seu pedido *#${p.id}* foi *CANCELADO*.\n\nSe houver dúvidas ou se quiser fazer um novo pedido, é só chamar aqui no WhatsApp. Estamos sempre à disposição.\n\nPrint House Gráfica Online`
+  em_acabamento: (p) => `Olá, ${p.cliente.nome}! ✂️\n\nSeu pedido *#${p.id}* está na fase de *ACABAMENTO*!\n\nEstamos nos detalhes finais para garantir a qualidade perfeita do seu material. Em breve estará pronto!\n\n${_SEP}\n\n🛍️ Itens\n\n${_listaItensMsg(p)}\n\n${_SEP}\n\n✨ Obrigado pela confiança na Print House!`,
+
+  pedido_finalizado: (p) => `Olá, ${p.cliente.nome}! ✅\n\nSeu pedido *#${p.id}* está *FINALIZADO E PRONTO*! 🎉\n\n${_SEP}\n\n🛍️ Itens prontos\n\n${_listaItensMsg(p)}\n\n${_SEP}\n\n📦 Entrega: ${p.entrega}\n💵 Total: ${formatarMoeda(p.total)}\n\nVamos combinar os detalhes de entrega/retirada? Estou à disposição! 😊\n\n✨ Obrigado por escolher a Print House!`,
+
+  saiu_entrega: (p) => `Olá, ${p.cliente.nome}! 🚚\n\nSeu pedido *#${p.id}* *SAIU PARA ENTREGA*!\n\nEm breve estará na sua mão. Fique atento ao nosso contato para combinar a entrega!\n\n${_SEP}\n\n🛍️ Itens\n\n${_listaItensMsg(p)}\n\n${_SEP}\n\n💵 Total: ${formatarMoeda(p.total)}\n\n✨ Obrigado por escolher a Print House!`,
+
+  entregue: (p) => `Olá, ${p.cliente.nome}! 💖\n\nQue alegria saber que você recebeu seu pedido *#${p.id}*!\n\nFicamos muito felizes em atendê-lo! Se puder, nos conta o que achou do produto — sua opinião é muito importante para a gente! ⭐\n\nPara próximas compras, estamos sempre à disposição!\n\n✨ Obrigado por escolher a Print House!`,
+
+  aguardando_material: (p) => `Olá, ${p.cliente.nome}! ⚠️\n\nSeu pedido *#${p.id}* está *AGUARDANDO MATERIAL*.\n\nEstamos aguardando o recebimento de um material necessário para a produção. Assim que chegar, daremos continuidade imediatamente!\n\nQualquer dúvida é só chamar. 😊\n\n✨ Print House Gráfica Online`,
+
+  pedido_pendencia: (p) => `Olá, ${p.cliente.nome}! 🛑\n\nSeu pedido *#${p.id}* está *COM PENDÊNCIA* e precisa da sua atenção.\n\nPor favor, entre em contato conosco para resolvermos o mais rápido possível!\n\n✨ Print House Gráfica Online`,
+
+  reimpressao: (p) => `Olá, ${p.cliente.nome}! 🔄\n\nSeu pedido *#${p.id}* entrou em processo de *REIMPRESSÃO*.\n\nEstamos refazendo o material para garantir a melhor qualidade. Em breve você receberá uma atualização!\n\n${_SEP}\n\n🛍️ Itens\n\n${_listaItensMsg(p)}\n\n${_SEP}\n\n✨ Obrigado pela paciência! Print House Gráfica Online`,
+
+  cancelado: (p) => `Olá, ${p.cliente.nome}.\n\nInformamos que seu pedido *#${p.id}* foi *CANCELADO*.\n\nSe houver dúvidas ou se quiser fazer um novo pedido, é só chamar aqui no WhatsApp. Estamos sempre à disposição.\n\nPrint House Gráfica Online`,
+
+  // Mensagens legadas (backward compat)
+  aguardando: (p) => MENSAGENS_STATUS.aguardando_pagamento(p),
+  confirmado:  (p) => MENSAGENS_STATUS.pagamento_confirmado(p),
+  producao:    (p) => MENSAGENS_STATUS.em_producao(p),
+  pronto:      (p) => MENSAGENS_STATUS.pedido_finalizado(p),
 };
 
 function mudarStatus(novo){
