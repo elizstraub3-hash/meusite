@@ -1095,7 +1095,7 @@ function renderLista(){
                   ${it.arte ? `<div class="item-detail">Arte: ${it.arte}${(it.arteValor || 0) > 0 ? ' (+' + formatarMoeda(it.arteValor) + ')' : ''}</div>` : ''}
                   ${it.infoEvento ? `<div class="item-detail" style="color:#60a5fa">Evento: ${it.infoEvento}</div>` : ''}
                 </div>
-                <div class="item-price">${it.orc ? 'Orç.' : formatarMoeda(((it.preco || 0) * (it.qty || 1)) + (it.arteValor || 0))}</div>
+                <div class="item-price">${it.brinde ? '<span style="background:rgba(250,204,21,.18);color:#facc15;border:1px solid rgba(250,204,21,.35);border-radius:4px;padding:2px 8px;font-size:11px;font-weight:700;letter-spacing:1px">🎁 BRINDE</span>' : it.orc ? 'Orç.' : formatarMoeda(((it.preco || 0) * (it.qty || 1)) + (it.arteValor || 0))}</div>
               </div>`).join('');
               return prog + rows;
             })()}
@@ -1603,11 +1603,11 @@ const _SEP = '━━━━━━━━━━━━━━━';
 function _listaItensMsg(p){
   return p.itens.map(it => {
     const sub = ((it.preco||0) * (it.qty||1)) + (it.arteValor||0);
-    const val = it.orc ? 'Sob orçamento' : 'R$ ' + sub.toFixed(2).replace('.',',');
+    const val = it.brinde ? '🎁 *BRINDE* (cortesia da Print House!)' : it.orc ? 'Sob orçamento' : 'R$ ' + sub.toFixed(2).replace('.',',');
     const prod = CATALOGO_PRODUTOS.find(cp => cp.nome === it.nome);
     const prazo = it.prazo || (prod ? prod.prazo : '');
     const varLine = it.variacao && it.variacao !== 'Padrão' && it.variacao !== '—' ? ` em ${it.variacao}` : '';
-    return `• ${it.qty}x ${it.nome}${varLine}\n💰 ${val}${prazo ? '\n⏳ Produção: ' + prazo : ''}`;
+    return `• ${it.qty}x ${it.nome}${varLine}\n💰 ${val}${prazo && !it.brinde ? '\n⏳ Produção: ' + prazo : ''}`;
   }).join('\n\n');
 }
 
@@ -1787,11 +1787,12 @@ function abrirEditarPedido(id){
       variacao: it.variacao || '',
       qty: it.qty || 1,
       valor: it.preco || 0,
-      custom: !prod
+      custom: !prod,
+      brinde: it.brinde || false
     };
   });
 
-  if(npItensList.length === 0) npItensList.push({produtoId:'',nome:'',variacao:'',qty:1,valor:0,custom:false});
+  if(npItensList.length === 0) npItensList.push({produtoId:'',nome:'',variacao:'',qty:1,valor:0,custom:false,brinde:false});
 
   renderItens();
   document.getElementById('novoPedidoBg').classList.add('show');
@@ -1873,7 +1874,7 @@ function _carregarCatalogo(){
 const CATALOGO_PRODUTOS = _carregarCatalogo();
 
 function adicionarItem(){
-  npItensList.push({produtoId: '', nome: '', variacao: '', qty: 1, valor: 0, custom: false});
+  npItensList.push({produtoId: '', nome: '', variacao: '', qty: 1, valor: 0, custom: false, brinde: false});
   renderItens();
 }
 
@@ -1883,11 +1884,17 @@ function removerItem(idx){
 }
 
 function atualizarItem(idx, campo, valor){
+  if(campo === 'brinde'){
+    npItensList[idx].brinde = valor;
+    if(valor){ npItensList[idx].valor = 0; }
+    renderItens();
+    return;
+  }
   if(campo === 'qty' || campo === 'valor'){
     npItensList[idx][campo] = parseFloat(valor) || 0;
-    const sub = npItensList[idx].qty * npItensList[idx].valor;
+    const sub = npItensList[idx].brinde ? 0 : npItensList[idx].qty * npItensList[idx].valor;
     const el = document.getElementById('npsub-' + idx);
-    if(el) el.textContent = formatarMoeda(sub);
+    if(el) el.textContent = npItensList[idx].brinde ? '🎁 Brinde' : formatarMoeda(sub);
   } else {
     npItensList[idx][campo] = valor;
   }
@@ -1985,14 +1992,21 @@ function renderItens(){
           <div class="np-qty-field">
             <span class="np-label">Preço unitário (R$)</span>
             <input type="number" class="np-input" placeholder="0,00" step="0.01" min="0"
-              value="${item.valor > 0 ? item.valor : ''}" oninput="atualizarItem(${idx}, 'valor', this.value)" style="margin:0">
+              value="${item.brinde ? '' : (item.valor > 0 ? item.valor : '')}"
+              oninput="atualizarItem(${idx}, 'valor', this.value)"
+              ${item.brinde ? 'disabled style="margin:0;opacity:.4"' : 'style="margin:0"'}>
           </div>
           <div class="np-qty-op">=</div>
           <div class="np-qty-field">
             <span class="np-label">Subtotal</span>
-            <span class="np-subtotal" id="npsub-${idx}">${formatarMoeda(item.qty * item.valor)}</span>
+            <span class="np-subtotal" id="npsub-${idx}">${item.brinde ? '🎁 Brinde' : formatarMoeda(item.qty * item.valor)}</span>
           </div>
         </div>
+        <label style="display:flex;align-items:center;gap:8px;margin-top:8px;cursor:pointer;user-select:none;font-size:12px;color:${item.brinde?'#facc15':'#888'}">
+          <input type="checkbox" onchange="atualizarItem(${idx}, 'brinde', this.checked)" ${item.brinde?'checked':''}
+            style="width:15px;height:15px;accent-color:#facc15;cursor:pointer">
+          🎁 Marcar como BRINDE (não cobra o cliente, aparece na mensagem)
+        </label>
       ` : ''}
     </div>`;
   }).join('');
@@ -2000,7 +2014,7 @@ function renderItens(){
 }
 
 function atualizarTotalNP(){
-  const total = npItensList.reduce((s, i) => s + (i.qty * i.valor), 0);
+  const total = npItensList.filter(i => !i.brinde).reduce((s, i) => s + (i.qty * i.valor), 0);
   document.getElementById('npTotal').textContent = formatarMoeda(total);
 }
 
@@ -2021,7 +2035,7 @@ function salvarNovoPedido(){
   const itensValidos = npItensList.filter(i => i.nome.trim() && i.qty > 0);
   if(itensValidos.length === 0){ alert('Preencha pelo menos um item completo'); return; }
 
-  const total = itensValidos.reduce((s, i) => s + (i.qty * i.valor), 0);
+  const total = itensValidos.filter(i => !i.brinde).reduce((s, i) => s + (i.qty * i.valor), 0);
 
   const pedidoId = 'PH' + Date.now().toString().slice(-7);
   const novoPedido = {
@@ -2034,8 +2048,9 @@ function salvarNovoPedido(){
       qty: it.qty,
       arte: '—',
       arteValor: 0,
-      preco: it.valor,
-      orc: it.valor === 0
+      preco: it.brinde ? 0 : it.valor,
+      orc: !it.brinde && it.valor === 0,
+      brinde: it.brinde || false
     })),
     entrega: entrega || '—',
     entregaId: null,
@@ -2060,15 +2075,16 @@ function salvarNovoPedido(){
         qty: it.qty,
         arte: it.arte || '—',
         arteValor: it.arteValor || 0,
-        preco: it.valor,
-        orc: it.valor === 0
+        preco: it.brinde ? 0 : it.valor,
+        orc: !it.brinde && it.valor === 0,
+        brinde: it.brinde || false
       }));
       pedidos[idx].entrega = entrega || pedidos[idx].entrega;
       pedidos[idx].pagamento = pagamento || pedidos[idx].pagamento;
       pedidos[idx].status = status;
       pedidos[idx].observacoes = obs;
       pedidos[idx].total = total;
-      pedidos[idx].hasOrc = itensValidos.some(i => i.valor === 0);
+      pedidos[idx].hasOrc = itensValidos.filter(i => !i.brinde).some(i => i.valor === 0);
       if(npOrigemSel) pedidos[idx].origem = npOrigemSel;
     }
     salvarPedidos();
