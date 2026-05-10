@@ -111,6 +111,41 @@ header.adm{background:#0a0a0a;border-bottom:1px solid var(--border);padding:14px
 .fin-modal textarea{resize:vertical;min-height:60px}
 .fin-modal-btns{display:flex;gap:8px;justify-content:flex-end;margin-top:4px}
 
+/* ============ CAIXA ============ */
+.caixa-body{padding:28px 4%}
+.caixa-topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+.caixa-topbar h2{font-family:'Bebas Neue';font-size:22px;letter-spacing:2px;margin:0}
+.caixa-btns{display:flex;gap:8px;flex-wrap:wrap}
+.caixa-btn-entrada{padding:10px 18px;border-radius:7px;background:rgba(74,222,128,.15);color:#4ade80;border:1px solid rgba(74,222,128,.3);font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.5px;transition:.2s}
+.caixa-btn-entrada:hover{background:rgba(74,222,128,.25)}
+.caixa-btn-saida{padding:10px 18px;border-radius:7px;background:rgba(229,9,20,.12);color:#e50914;border:1px solid rgba(229,9,20,.3);font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.5px;transition:.2s}
+.caixa-btn-saida:hover{background:rgba(229,9,20,.22)}
+.caixa-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:28px}
+.caixa-card{background:#111;border:1px solid var(--border);border-radius:10px;padding:18px 20px}
+.caixa-card-lbl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:8px}
+.caixa-card-val{font-family:'Bebas Neue';font-size:28px;letter-spacing:1px}
+.caixa-card-val.verde{color:#4ade80}
+.caixa-card-val.vermelho{color:#e50914}
+.caixa-card-val.saldo-pos{color:#4ade80}
+.caixa-card-val.saldo-neg{color:#e50914}
+.caixa-filters{display:flex;gap:8px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
+.caixa-filters select{background:#111;border:1px solid #333;color:#fff;border-radius:7px;padding:8px 12px;font-family:inherit;font-size:.8rem;cursor:pointer}
+.caixa-filters-tipo{display:flex;gap:6px}
+.caixa-tipo-btn{padding:6px 14px;border-radius:6px;background:#111;border:1px solid #333;color:#888;font-family:inherit;font-size:.75rem;font-weight:600;cursor:pointer;letter-spacing:.5px;transition:.2s}
+.caixa-tipo-btn.act{background:#1a1a1a;color:#fff;border-color:#555}
+.caixa-table{width:100%;border-collapse:collapse;font-size:.85rem}
+.caixa-table th{text-align:left;padding:8px 10px;color:#555;font-size:.72rem;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid #1a1a1a}
+.caixa-table td{padding:11px 10px;border-bottom:1px solid #111;vertical-align:middle}
+.caixa-table tr:hover td{background:#0a0a0a}
+.caixa-entrada-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:4px;background:rgba(74,222,128,.12);color:#4ade80;border:1px solid rgba(74,222,128,.25);font-size:.72rem;font-weight:700;letter-spacing:.5px}
+.caixa-saida-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:4px;background:rgba(229,9,20,.1);color:#e50914;border:1px solid rgba(229,9,20,.25);font-size:.72rem;font-weight:700;letter-spacing:.5px}
+.caixa-val-entrada{color:#4ade80;font-weight:700;font-family:'Bebas Neue';font-size:16px;letter-spacing:.5px}
+.caixa-val-saida{color:#e50914;font-weight:700;font-family:'Bebas Neue';font-size:16px;letter-spacing:.5px}
+.caixa-del-btn{background:none;border:none;color:#333;cursor:pointer;padding:4px;border-radius:4px;transition:.2s;font-size:16px}
+.caixa-del-btn:hover{color:#e50914;background:rgba(229,9,20,.1)}
+.caixa-empty{text-align:center;color:#333;padding:50px 20px;font-size:.9rem}
+@media(max-width:600px){.caixa-table{font-size:.75rem}.caixa-table th,.caixa-table td{padding:8px 6px}}
+
 .np-qty-row{display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap;margin-top:6px}
 .np-qty-field{display:flex;flex-direction:column;gap:4px;flex:1;min-width:80px}
 .np-qty-op{font-size:1.1rem;color:#555;padding-bottom:9px;font-weight:700;flex-shrink:0}
@@ -439,6 +474,10 @@ header.adm{background:#0a0a0a;border-bottom:1px solid var(--border);padding:14px
       <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
       Financeiro
     </button>
+    <button class="admin-tab" id="tab-caixa" onclick="setAba('caixa')">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+      Caixa
+    </button>
   </nav>
 
   <div class="admin-section" id="sectionFinanceiro">
@@ -612,6 +651,90 @@ header.adm{background:#0a0a0a;border-bottom:1px solid var(--border);padding:14px
         <button onclick="abrirNovoCliente()" style="padding:10px 18px;border-radius:7px;background:#fff;color:#000;border:none;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.5px">+ Novo Cliente</button>
       </div>
       <div class="cli-grid" id="cliGrid"></div>
+    </div>
+  </div>
+
+  <!-- ============ CAIXA ============ -->
+  <div class="admin-section" id="sectionCaixa">
+    <div class="caixa-body">
+      <div class="caixa-topbar">
+        <h2>Caixa</h2>
+        <div class="caixa-btns">
+          <button class="caixa-btn-entrada" onclick="abrirModalCaixa('entrada')">+ Entrada</button>
+          <button class="caixa-btn-saida" onclick="abrirModalCaixa('saida')">- Saída</button>
+        </div>
+      </div>
+      <div class="caixa-cards">
+        <div class="caixa-card" style="border-color:#222">
+          <div class="caixa-card-lbl">Saldo em Caixa</div>
+          <div class="caixa-card-val" id="cxSaldo">R$ 0,00</div>
+        </div>
+        <div class="caixa-card">
+          <div class="caixa-card-lbl">Total Entradas</div>
+          <div class="caixa-card-val verde" id="cxEntradas">R$ 0,00</div>
+        </div>
+        <div class="caixa-card">
+          <div class="caixa-card-lbl">Total Saídas</div>
+          <div class="caixa-card-val vermelho" id="cxSaidas">R$ 0,00</div>
+        </div>
+        <div class="caixa-card">
+          <div class="caixa-card-lbl">Movimentações</div>
+          <div class="caixa-card-val" id="cxQtd" style="color:#aaa">0</div>
+        </div>
+      </div>
+
+      <div class="caixa-filters">
+        <select id="cxMesFiltro" onchange="renderCaixa()" style="flex:0 0 auto">
+          <option value="todos">Todos os períodos</option>
+        </select>
+        <div class="caixa-filters-tipo">
+          <button class="caixa-tipo-btn act" id="cxTipoTodos" onclick="setCxTipo('todos')">Todos</button>
+          <button class="caixa-tipo-btn" id="cxTipoEntrada" onclick="setCxTipo('entrada')">Entradas</button>
+          <button class="caixa-tipo-btn" id="cxTipoSaida" onclick="setCxTipo('saida')">Saídas</button>
+        </div>
+      </div>
+
+      <div style="overflow-x:auto">
+        <table class="caixa-table">
+          <thead><tr>
+            <th>Data</th>
+            <th>Tipo</th>
+            <th>Descrição</th>
+            <th>Categoria</th>
+            <th style="text-align:right">Valor</th>
+            <th></th>
+          </tr></thead>
+          <tbody id="cxTabela"></tbody>
+        </table>
+      </div>
+      <div id="cxEmpty" class="caixa-empty" style="display:none">
+        Nenhuma movimentação registrada.<br>
+        <small style="color:#2a2a2a">Use os botões acima para registrar entradas e saídas.</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Caixa -->
+  <div class="fin-modal-overlay" id="modalCaixa" style="display:none" onclick="if(event.target===this)fecharModalCaixa()">
+    <div class="fin-modal">
+      <h3 id="modalCaixaTitulo">Nova Entrada</h3>
+      <label>Descrição *</label>
+      <input type="text" id="cxDesc" placeholder="Ex: Pagamento cliente, Venda cartão...">
+      <label>Valor (R$) *</label>
+      <input type="number" id="cxValor" step="0.01" min="0.01" placeholder="0,00">
+      <label>Categoria</label>
+      <select id="cxCategoria">
+        <option value="">— Sem categoria —</option>
+        <!-- preenchido via JS conforme tipo -->
+      </select>
+      <label>Data</label>
+      <input type="date" id="cxData">
+      <label>Observação</label>
+      <textarea id="cxObs" placeholder="Detalhe opcional..."></textarea>
+      <div class="fin-modal-btns">
+        <button onclick="fecharModalCaixa()" style="padding:10px 18px;background:#222;color:#aaa;border:1px solid #333;border-radius:7px;cursor:pointer;font-family:inherit">Cancelar</button>
+        <button id="cxSalvarBtn" onclick="salvarMovCaixa()" style="padding:10px 18px;background:#4ade80;color:#000;border:none;border-radius:7px;cursor:pointer;font-family:inherit;font-weight:700">Salvar</button>
+      </div>
     </div>
   </div>
 
@@ -942,6 +1065,7 @@ function carregarPedidos(){
   carregarClientes();
   carregarEstoque();
   carregarFinanceiro();
+  carregarCaixa();
   setAba('dashboard');
 }
 
@@ -1168,6 +1292,7 @@ function setAba(aba){
   if(aba === 'pedidos') render();
   if(aba === 'estoque') renderEstoque();
   if(aba === 'financeiro') renderFinanceiro();
+  if(aba === 'caixa') renderCaixa();
 }
 
 // ============ ESTOQUE ============
@@ -2527,6 +2652,152 @@ setInterval(() => {
     }
   }
 }, 5000);
+
+// ============ CAIXA ============
+let caixa = [];
+let _cxTipoAtual = 'entrada';
+let _cxFiltroTipo = 'todos';
+
+const CX_CAT_ENTRADA = ['Venda — PIX','Venda — Cartão','Venda — Dinheiro','Venda — Boleto','Adiantamento','Outros (entrada)'];
+const CX_CAT_SAIDA   = ['Material / Insumo','Aluguel','Energia / Água','Internet / Telefone','Frete / Entrega','Manutenção','Salário / Pró-labore','Impostos','Marketing','Outros (saída)'];
+
+function carregarCaixa(){
+  try { caixa = JSON.parse(localStorage.getItem('ph_caixa') || '[]'); } catch(e){ caixa = []; }
+}
+function salvarCaixa(){
+  localStorage.setItem('ph_caixa', JSON.stringify(caixa));
+}
+
+function setCxTipo(tipo){
+  _cxFiltroTipo = tipo;
+  document.querySelectorAll('.caixa-tipo-btn').forEach(b => b.classList.remove('act'));
+  document.getElementById('cxTipo' + tipo.charAt(0).toUpperCase() + tipo.slice(1)).classList.add('act');
+  renderCaixa();
+}
+
+function _cxPopularMesFiltro(){
+  const sel = document.getElementById('cxMesFiltro');
+  if(!sel) return;
+  const meses = new Set();
+  caixa.forEach(m => { if(m.data) meses.add(m.data.slice(0,7)); });
+  const sorted = [...meses].sort((a,b) => b.localeCompare(a));
+  const atual = sel.value;
+  sel.innerHTML = '<option value="todos">Todos os períodos</option>' +
+    sorted.map(m => {
+      const [ano, mes] = m.split('-');
+      const label = new Date(ano, mes-1).toLocaleString('pt-BR',{month:'long',year:'numeric'});
+      return `<option value="${m}">${label}</option>`;
+    }).join('');
+  if([...sel.options].some(o => o.value === atual)) sel.value = atual;
+}
+
+function renderCaixa(){
+  _cxPopularMesFiltro();
+  const mesFiltro = document.getElementById('cxMesFiltro')?.value || 'todos';
+
+  let lista = [...caixa].sort((a,b) => new Date(b.data) - new Date(a.data));
+  if(mesFiltro !== 'todos') lista = lista.filter(m => m.data.startsWith(mesFiltro));
+  if(_cxFiltroTipo !== 'todos') lista = lista.filter(m => m.tipo === _cxFiltroTipo);
+
+  // Calcular totais sobre lista sem filtro de tipo (mas com filtro de mês)
+  const listaBase = mesFiltro === 'todos' ? caixa : caixa.filter(m => m.data.startsWith(mesFiltro));
+  const totEntradas = listaBase.filter(m=>m.tipo==='entrada').reduce((s,m)=>s+m.valor,0);
+  const totSaidas   = listaBase.filter(m=>m.tipo==='saida').reduce((s,m)=>s+m.valor,0);
+  const saldo = totEntradas - totSaidas;
+
+  const saldoEl = document.getElementById('cxSaldo');
+  saldoEl.textContent = formatarMoeda(saldo);
+  saldoEl.className = 'caixa-card-val ' + (saldo >= 0 ? 'saldo-pos' : 'saldo-neg');
+  document.getElementById('cxEntradas').textContent = formatarMoeda(totEntradas);
+  document.getElementById('cxSaidas').textContent   = formatarMoeda(totSaidas);
+  document.getElementById('cxQtd').textContent       = listaBase.length;
+
+  const tbody = document.getElementById('cxTabela');
+  const empty = document.getElementById('cxEmpty');
+
+  if(!lista.length){
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  tbody.innerHTML = lista.map(m => {
+    const d = new Date(m.data + 'T12:00:00');
+    const dataFmt = d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit'});
+    const badge = m.tipo === 'entrada'
+      ? `<span class="caixa-entrada-badge">↑ Entrada</span>`
+      : `<span class="caixa-saida-badge">↓ Saída</span>`;
+    const valCls = m.tipo === 'entrada' ? 'caixa-val-entrada' : 'caixa-val-saida';
+    const sinal = m.tipo === 'entrada' ? '+' : '-';
+    return `<tr>
+      <td style="color:#666;white-space:nowrap">${dataFmt}</td>
+      <td>${badge}</td>
+      <td>
+        <div style="font-weight:600;color:#eee;font-size:.85rem">${escHtml(m.desc)}</div>
+        ${m.obs ? `<div style="font-size:.72rem;color:#555;margin-top:2px">${escHtml(m.obs)}</div>` : ''}
+      </td>
+      <td style="color:#555;font-size:.78rem">${escHtml(m.categoria||'—')}</td>
+      <td style="text-align:right"><span class="${valCls}">${sinal} ${formatarMoeda(m.valor)}</span></td>
+      <td><button class="caixa-del-btn" onclick="excluirMovCaixa('${m.id}')" title="Excluir">×</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function escHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function abrirModalCaixa(tipo){
+  _cxTipoAtual = tipo;
+  const isEntrada = tipo === 'entrada';
+  document.getElementById('modalCaixaTitulo').textContent = isEntrada ? 'Nova Entrada' : 'Nova Saída';
+  document.getElementById('cxSalvarBtn').style.background = isEntrada ? '#4ade80' : '#e50914';
+  document.getElementById('cxSalvarBtn').style.color = isEntrada ? '#000' : '#fff';
+  const cats = isEntrada ? CX_CAT_ENTRADA : CX_CAT_SAIDA;
+  document.getElementById('cxCategoria').innerHTML =
+    '<option value="">— Sem categoria —</option>' +
+    cats.map(c => `<option value="${c}">${c}</option>`).join('');
+  document.getElementById('cxDesc').value = '';
+  document.getElementById('cxValor').value = '';
+  document.getElementById('cxObs').value = '';
+  document.getElementById('cxData').value = new Date().toISOString().slice(0,10);
+  document.getElementById('modalCaixa').style.display = 'flex';
+  setTimeout(() => document.getElementById('cxDesc').focus(), 100);
+}
+
+function fecharModalCaixa(){
+  document.getElementById('modalCaixa').style.display = 'none';
+}
+
+function salvarMovCaixa(){
+  const desc = document.getElementById('cxDesc').value.trim();
+  const valor = parseFloat(document.getElementById('cxValor').value) || 0;
+  const data = document.getElementById('cxData').value;
+  if(!desc){ alert('Informe uma descrição'); document.getElementById('cxDesc').focus(); return; }
+  if(valor <= 0){ alert('Informe um valor válido'); document.getElementById('cxValor').focus(); return; }
+  if(!data){ alert('Informe a data'); return; }
+  const mov = {
+    id: 'CX' + Date.now(),
+    tipo: _cxTipoAtual,
+    desc,
+    valor,
+    data,
+    categoria: document.getElementById('cxCategoria').value,
+    obs: document.getElementById('cxObs').value.trim()
+  };
+  caixa.push(mov);
+  salvarCaixa();
+  fecharModalCaixa();
+  renderCaixa();
+  showToast(_cxTipoAtual === 'entrada' ? 'Entrada registrada!' : 'Saída registrada!');
+}
+
+function excluirMovCaixa(id){
+  if(!confirm('Excluir esta movimentação?')) return;
+  caixa = caixa.filter(m => m.id !== id);
+  salvarCaixa();
+  renderCaixa();
+  showToast('Movimentação excluída');
+}
 </script>
 
 </body>
