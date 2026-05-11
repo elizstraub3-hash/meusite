@@ -340,6 +340,32 @@ header.adm{background:#0a0a0a;border-bottom:1px solid var(--border);padding:14px
 
 /* ── estoque ── */
 .est-body{padding:24px 4% 60px}
+
+/* ── pagamentos parciais ── */
+.pag-parc-section{background:#0d0d0d;border:1px solid #1e1e1e;border-radius:8px;padding:14px 16px;margin-top:4px}
+.pag-parc-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px}
+.pag-parc-title{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#555;font-weight:700}
+.pag-add-btn{padding:5px 12px;border-radius:5px;background:rgba(74,222,128,.12);color:#4ade80;border:1px solid rgba(74,222,128,.25);font-family:inherit;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:.5px;transition:.2s}
+.pag-add-btn:hover{background:rgba(74,222,128,.22)}
+.pag-barra-wrap{margin-bottom:10px}
+.pag-barra-outer{height:8px;background:#1a1a1a;border-radius:4px;overflow:hidden;margin-bottom:6px}
+.pag-barra-inner{height:100%;border-radius:4px;transition:.4s;background:linear-gradient(90deg,#4ade80,#22c55e)}
+.pag-barra-inner.completo{background:linear-gradient(90deg,#4ade80,#22c55e)}
+.pag-barra-inner.parcial{background:linear-gradient(90deg,#facc15,#f59e0b)}
+.pag-barra-info{display:flex;justify-content:space-between;font-size:.78rem}
+.pag-pago{color:#4ade80;font-weight:700}
+.pag-falta{color:#e50914;font-weight:700}
+.pag-pct{color:#555;font-size:.72rem}
+.pag-lista{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.pag-item{display:flex;align-items:center;gap:10px;padding:7px 10px;background:#111;border-radius:6px;font-size:.82rem}
+.pag-item-data{color:#555;font-size:.72rem;min-width:52px}
+.pag-item-forma{background:rgba(96,165,250,.12);color:#60a5fa;border:1px solid rgba(96,165,250,.2);border-radius:3px;padding:2px 6px;font-size:.68rem;font-weight:700;white-space:nowrap}
+.pag-item-desc{flex:1;color:#ccc}
+.pag-item-val{font-family:'Bebas Neue';font-size:15px;color:#4ade80;letter-spacing:.5px;white-space:nowrap}
+.pag-item-del{background:none;border:none;color:#333;cursor:pointer;font-size:15px;padding:2px 4px;border-radius:3px;transition:.2s;line-height:1}
+.pag-item-del:hover{color:#e50914;background:rgba(229,9,20,.1)}
+.pag-quitado{display:inline-flex;align-items:center;gap:4px;background:rgba(74,222,128,.12);color:#4ade80;border:1px solid rgba(74,222,128,.2);border-radius:4px;padding:3px 9px;font-size:.72rem;font-weight:700;letter-spacing:.5px}
+.pag-parcial-badge{display:inline-flex;align-items:center;gap:3px;background:rgba(250,204,21,.1);color:#facc15;border:1px solid rgba(250,204,21,.2);border-radius:3px;padding:2px 6px;font-size:9px;font-weight:700;letter-spacing:.5px;margin-left:6px;vertical-align:middle}
 .est-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;gap:12px;flex-wrap:wrap}
 .est-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:24px}
 .est-card{background:#111;border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center}
@@ -710,6 +736,33 @@ header.adm{background:#0a0a0a;border-bottom:1px solid var(--border);padding:14px
       <div id="cxEmpty" class="caixa-empty" style="display:none">
         Nenhuma movimentação registrada.<br>
         <small style="color:#2a2a2a">Use os botões acima para registrar entradas e saídas.</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Pagamento Parcial -->
+  <div class="fin-modal-overlay" id="modalPagParcial" style="display:none" onclick="if(event.target===this)fecharModalPagParcial()">
+    <div class="fin-modal">
+      <h3>Registrar Pagamento</h3>
+      <div id="modalPagParcialResumo" style="background:#0a0a0a;border:1px solid #222;border-radius:7px;padding:12px;margin-bottom:16px;font-size:.82rem"></div>
+      <label>Valor Recebido (R$) *</label>
+      <input type="number" id="ppValor" step="0.01" min="0.01" placeholder="0,00">
+      <label>Forma de Pagamento *</label>
+      <select id="ppForma">
+        <option value="PIX">PIX</option>
+        <option value="Cartão de Crédito">Cartão de Crédito</option>
+        <option value="Cartão de Débito">Cartão de Débito</option>
+        <option value="Dinheiro">Dinheiro</option>
+        <option value="Transferência">Transferência Bancária</option>
+        <option value="Boleto">Boleto</option>
+      </select>
+      <label>Data do Pagamento</label>
+      <input type="date" id="ppData">
+      <label>Observação</label>
+      <textarea id="ppObs" placeholder="Ex: 50% entrada, saldo na entrega..."></textarea>
+      <div class="fin-modal-btns">
+        <button onclick="fecharModalPagParcial()" style="padding:10px 18px;background:#222;color:#aaa;border:1px solid #333;border-radius:7px;cursor:pointer;font-family:inherit">Cancelar</button>
+        <button onclick="salvarPagParcial()" style="padding:10px 18px;background:#4ade80;color:#000;border:none;border-radius:7px;cursor:pointer;font-family:inherit;font-weight:700">Registrar</button>
       </div>
     </div>
   </div>
@@ -1187,7 +1240,7 @@ function renderLista(){
         </div>
         <div class="order-right">
           <span class="status-badge ${st.class}">${st.label}</span>
-          <span class="order-total">${p.hasOrc && p.total === 0 ? 'Orç.' : formatarMoeda(p.total)}</span>
+          <span class="order-total">${p.hasOrc && p.total === 0 ? 'Orç.' : formatarMoeda(p.total)}${(() => { const pags=p.pagamentosRecebidos||[]; const tp=pags.reduce((s,pg)=>s+pg.valor,0); if(tp<=0) return ''; if(tp>=(p.total||0)) return '<span class="pag-parcial-badge" style="background:rgba(74,222,128,.12);color:#4ade80;border-color:rgba(74,222,128,.2)">✓ PAGO</span>'; return '<span class="pag-parcial-badge">'+Math.round(tp/(p.total||1)*100)+'% pago</span>'; })()}</span>
           <svg class="toggle-arrow" width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
         </div>
       </div>
@@ -1236,10 +1289,50 @@ function renderLista(){
           <div class="body-content"><strong>${p.pagamento || '—'}</strong></div>
         </div>
 
-        <div class="body-section">
-          <div class="body-label">Total</div>
-          <div class="body-content"><strong style="font-family:'Bebas Neue';font-size:24px;letter-spacing:1px">${p.hasOrc && p.total === 0 ? 'Sob orçamento' : formatarMoeda(p.total)}${p.hasOrc ? ' + itens sob orçamento' : ''}</strong></div>
-        </div>
+        ${(() => {
+          const totalPedido = p.total || 0;
+          const pags = p.pagamentosRecebidos || [];
+          const totalPago = pags.reduce((s, pg) => s + pg.valor, 0);
+          const saldo = Math.max(0, totalPedido - totalPago);
+          const pct = totalPedido > 0 ? Math.min(100, Math.round(totalPago / totalPedido * 100)) : (pags.length > 0 ? 100 : 0);
+          const quitado = totalPedido > 0 && totalPago >= totalPedido;
+          const barCls = quitado ? 'completo' : 'parcial';
+
+          const listaHtml = pags.length ? pags.map(pg => {
+            const d = new Date(pg.data + 'T12:00:00');
+            const df = d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit'});
+            return `<div class="pag-item">
+              <span class="pag-item-data">${df}</span>
+              <span class="pag-item-forma">${pg.forma}</span>
+              <span class="pag-item-desc">${pg.obs ? escHtml(pg.obs) : '—'}</span>
+              <span class="pag-item-val">+ ${formatarMoeda(pg.valor)}</span>
+              <button class="pag-item-del" onclick="excluirPagParcial('${p.id}','${pg.id}')" title="Remover">×</button>
+            </div>`;
+          }).join('') : `<div style="color:#333;font-size:.8rem;text-align:center;padding:10px">Nenhum pagamento registrado ainda.</div>`;
+
+          return `<div class="body-section">
+            <div class="body-label">Total</div>
+            <div class="body-content">
+              <strong style="font-family:'Bebas Neue';font-size:24px;letter-spacing:1px">${p.hasOrc && totalPedido === 0 ? 'Sob orçamento' : formatarMoeda(totalPedido)}${p.hasOrc ? ' + itens sob orçamento' : ''}</strong>
+            </div>
+            <div class="pag-parc-section" style="margin-top:10px">
+              <div class="pag-parc-header">
+                <span class="pag-parc-title">Controle de Pagamentos</span>
+                <button class="pag-add-btn" onclick="abrirModalPagParcial('${p.id}')">+ Registrar Pagamento</button>
+              </div>
+              ${totalPedido > 0 ? `
+              <div class="pag-barra-wrap">
+                <div class="pag-barra-outer"><div class="pag-barra-inner ${barCls}" style="width:${pct}%"></div></div>
+                <div class="pag-barra-info">
+                  <span class="pag-pago">Pago: ${formatarMoeda(totalPago)}</span>
+                  <span class="pag-pct">${pct}%</span>
+                  ${quitado ? `<span class="pag-quitado">✓ Quitado</span>` : `<span class="pag-falta">Falta: ${formatarMoeda(saldo)}</span>`}
+                </div>
+              </div>` : ''}
+              <div class="pag-lista">${listaHtml}</div>
+            </div>
+          </div>`;
+        })()}
 
         ${p.observacoes ? `<div class="body-section">
           <div class="body-label">Observações Internas</div>
@@ -2652,6 +2745,76 @@ setInterval(() => {
     }
   }
 }, 5000);
+
+// ============ PAGAMENTOS PARCIAIS ============
+let _ppPedidoId = null;
+
+function abrirModalPagParcial(pedidoId){
+  const p = pedidos.find(x => x.id === pedidoId);
+  if(!p) return;
+  _ppPedidoId = pedidoId;
+  const pags = p.pagamentosRecebidos || [];
+  const totalPago = pags.reduce((s, pg) => s + pg.valor, 0);
+  const saldo = Math.max(0, (p.total || 0) - totalPago);
+  const resumo = document.getElementById('modalPagParcialResumo');
+  resumo.innerHTML = `
+    <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+      <span style="color:#666">Total do pedido</span>
+      <strong style="color:#fff">${formatarMoeda(p.total||0)}</strong>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+      <span style="color:#666">Já pago</span>
+      <strong style="color:#4ade80">${formatarMoeda(totalPago)}</strong>
+    </div>
+    <div style="display:flex;justify-content:space-between;border-top:1px solid #1a1a1a;padding-top:6px;margin-top:2px">
+      <span style="color:#666">Saldo restante</span>
+      <strong style="color:${saldo > 0 ? '#e50914' : '#4ade80'}">${saldo > 0 ? formatarMoeda(saldo) : '✓ Quitado'}</strong>
+    </div>`;
+  document.getElementById('ppValor').value = saldo > 0 ? saldo.toFixed(2) : '';
+  document.getElementById('ppObs').value = '';
+  document.getElementById('ppData').value = new Date().toISOString().slice(0,10);
+  document.getElementById('modalPagParcial').style.display = 'flex';
+  setTimeout(() => document.getElementById('ppValor').focus(), 100);
+}
+
+function fecharModalPagParcial(){
+  document.getElementById('modalPagParcial').style.display = 'none';
+  _ppPedidoId = null;
+}
+
+function salvarPagParcial(){
+  const p = pedidos.find(x => x.id === _ppPedidoId);
+  if(!p) return;
+  const valor = parseFloat(document.getElementById('ppValor').value) || 0;
+  const forma = document.getElementById('ppForma').value;
+  const data  = document.getElementById('ppData').value;
+  const obs   = document.getElementById('ppObs').value.trim();
+  if(valor <= 0){ alert('Informe um valor válido'); document.getElementById('ppValor').focus(); return; }
+  if(!data){ alert('Informe a data'); return; }
+  if(!p.pagamentosRecebidos) p.pagamentosRecebidos = [];
+  p.pagamentosRecebidos.push({ id: 'PP' + Date.now(), valor, forma, data, obs });
+  salvarPedidos();
+  render();
+  if(_abaAtiva === 'dashboard') renderDashboard();
+  fecharModalPagParcial();
+  showToast('Pagamento de ' + formatarMoeda(valor) + ' registrado!');
+  // Reabrir o pedido expandido
+  setTimeout(() => {
+    const el = document.getElementById('order-' + _ppPedidoId || p.id);
+    if(el && !el.classList.contains('expanded')) el.classList.add('expanded');
+  }, 150);
+}
+
+function excluirPagParcial(pedidoId, pagId){
+  if(!confirm('Remover este pagamento?')) return;
+  const p = pedidos.find(x => x.id === pedidoId);
+  if(!p || !p.pagamentosRecebidos) return;
+  p.pagamentosRecebidos = p.pagamentosRecebidos.filter(pg => pg.id !== pagId);
+  salvarPedidos();
+  render();
+  if(_abaAtiva === 'dashboard') renderDashboard();
+  showToast('Pagamento removido');
+}
 
 // ============ CAIXA ============
 let caixa = [];
