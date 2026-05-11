@@ -401,6 +401,13 @@ header.adm{background:#0a0a0a;border-bottom:1px solid var(--border);padding:14px
 .item-row.feito .item-price{color:#3a3a3a}
 .itens-progress{font-size:10px;color:#555;margin-bottom:8px;letter-spacing:.5px}
 .itens-progress span{color:#4ade80;font-weight:700}
+/* Status por item */
+.item-status-row{display:flex;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap}
+.item-status-sel{background:#111;border:1px solid #2a2a2a;color:#ccc;border-radius:5px;padding:3px 6px;font-size:.72rem;font-family:inherit;cursor:pointer;outline:none;transition:.2s}
+.item-status-sel:hover{border-color:#444}
+.item-status-sel:focus{border-color:#555}
+.item-wpp-btn{background:rgba(37,211,102,.1);border:1px solid rgba(37,211,102,.2);color:#25d366;border-radius:5px;padding:3px 8px;font-size:.7rem;font-weight:700;cursor:pointer;letter-spacing:.3px;transition:.2s;white-space:nowrap;font-family:inherit}
+.item-wpp-btn:hover{background:rgba(37,211,102,.2)}
 
 /* ============ CLIENTES ============ */
 .cli-body{padding:24px 4% 60px}
@@ -1261,7 +1268,12 @@ function renderLista(){
             ${(() => {
               const feitos = itens.filter(it => it.feito).length;
               const prog = itens.length > 0 ? `<div class="itens-progress"><span>${feitos}/${itens.length}</span> itens concluídos</div>` : '';
-              const rows = itens.map((it, ii) => `
+              const rows = itens.map((it, ii) => {
+                const itSt = it.itemStatus || 'aguardando';
+                const stOpts = Object.entries(ITEM_STATUS).map(([k,v]) =>
+                  `<option value="${k}" ${itSt===k?'selected':''}>${v.emoji} ${v.label}</option>`
+                ).join('');
+                return `
               <div class="item-row${it.feito ? ' feito' : ''}" id="irow-${p.id}-${ii}">
                 <button class="item-check-btn${it.feito ? ' feito' : ''}" onclick="toggleItemFeito('${p.id}',${ii})" title="${it.feito ? 'Marcar como pendente' : 'Marcar como feito'}">
                   <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
@@ -1271,9 +1283,14 @@ function renderLista(){
                   <div class="item-detail">${it.variacao || '—'}</div>
                   ${it.arte ? `<div class="item-detail">Arte: ${it.arte}${(it.arteValor || 0) > 0 ? ' (+' + formatarMoeda(it.arteValor) + ')' : ''}</div>` : ''}
                   ${it.infoEvento ? `<div class="item-detail" style="color:#60a5fa">Evento: ${it.infoEvento}</div>` : ''}
+                  ${it.brinde ? '' : `<div class="item-status-row">
+                    <select class="item-status-sel" onchange="mudarStatusItem('${p.id}',${ii},this.value)">${stOpts}</select>
+                    <button class="item-wpp-btn" onclick="enviarMensagemItem('${p.id}',${ii})">📱 Avisar</button>
+                  </div>`}
                 </div>
                 <div class="item-price">${it.brinde ? '<span style="background:rgba(250,204,21,.18);color:#facc15;border:1px solid rgba(250,204,21,.35);border-radius:4px;padding:2px 8px;font-size:11px;font-weight:700;letter-spacing:1px">🎁 BRINDE</span>' : it.orc ? 'Orç.' : formatarMoeda(((it.preco || 0) * (it.qty || 1)) + (it.arteValor || 0))}</div>
-              </div>`).join('');
+              </div>`;
+              }).join('');
               return prog + rows;
             })()}
           </div>
@@ -2745,6 +2762,53 @@ setInterval(() => {
     }
   }
 }, 5000);
+
+// ============ STATUS POR ITEM ============
+const ITEM_STATUS = {
+  aguardando:     {label:'Aguardando',        emoji:'⏳'},
+  em_arte:        {label:'Em Arte / Design',  emoji:'🎨'},
+  em_producao:    {label:'Em Produção',       emoji:'🖨️'},
+  em_acabamento:  {label:'Em Acabamento',     emoji:'✂️'},
+  pronto:         {label:'Pronto',            emoji:'✅'},
+  entregue:       {label:'Entregue',          emoji:'📦'},
+};
+
+function mudarStatusItem(pedidoId, itemIdx, novoStatus){
+  const p = pedidos.find(x => x.id === pedidoId);
+  if(!p || !p.itens[itemIdx]) return;
+  const statusAnterior = p.itens[itemIdx].itemStatus || 'aguardando';
+  p.itens[itemIdx].itemStatus = novoStatus;
+  if(novoStatus === 'pronto' || novoStatus === 'entregue') p.itens[itemIdx].feito = true;
+  salvarPedidos();
+  const st = ITEM_STATUS[novoStatus];
+  showToast(`${st.emoji} "${p.itens[itemIdx].nome}" → ${st.label}`);
+  if(novoStatus !== statusAnterior){
+    setTimeout(() => {
+      if(confirm(`Avisar ${p.cliente.nome} no WhatsApp sobre o status deste item?`)){
+        enviarMensagemItem(pedidoId, itemIdx);
+      }
+    }, 300);
+  }
+}
+
+function _msgItemStatus(p, it, status){
+  const st = ITEM_STATUS[status] || ITEM_STATUS.aguardando;
+  const varLine = it.variacao && it.variacao !== 'Padrão' && it.variacao !== '—' ? ` em ${it.variacao}` : '';
+  const prazoLine = it.prazo ? `\n⏳ Prazo estimado: ${it.prazo}` : '';
+  const _SEP2 = '━━━━━━━━━━━━━━━';
+  return `Olá, ${p.cliente.nome}! ${st.emoji}\n\n📌 Atualização do seu pedido *#${p.id}*\n\n${_SEP2}\n\n${st.emoji} *${st.label}*\n\n• ${it.qty || 1}x ${it.nome}${varLine}${prazoLine}\n\n${_SEP2}\n\nQualquer dúvida é só chamar! 😊\n\n✨ Print House Gráfica Online`;
+}
+
+function enviarMensagemItem(pedidoId, itemIdx){
+  const p = pedidos.find(x => x.id === pedidoId);
+  if(!p || !p.itens[itemIdx]) return;
+  const it = p.itens[itemIdx];
+  const status = it.itemStatus || 'aguardando';
+  const fone = p.cliente.fone.replace(/\D/g,'');
+  const foneFinal = fone.startsWith('55') ? fone : '55' + fone;
+  const msg = _msgItemStatus(p, it, status);
+  window.open(`https://wa.me/${foneFinal}?text=${encodeURIComponent(msg)}`, '_blank');
+}
 
 // ============ PAGAMENTOS PARCIAIS ============
 let _ppPedidoId = null;
