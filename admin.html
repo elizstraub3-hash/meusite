@@ -1516,6 +1516,10 @@ function renderLista(){
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
             Editar
           </button>
+          <button class="act-btn" onclick="duplicarPedido('${p.id}')">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+            Duplicar
+          </button>
           <button class="act-btn" onclick="abrirStatusModal('${p.id}')">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
             Alterar Status
@@ -2097,6 +2101,33 @@ function deletarPedido(id){
   showToast('Pedido excluído');
 }
 
+function duplicarPedido(id){
+  const p = pedidos.find(x => x.id === id);
+  if(!p) return;
+  if(!confirm(`Duplicar o pedido de ${p.cliente.nome}? Será criada uma cópia com status "Pedido Recebido".`)) return;
+  const copia = JSON.parse(JSON.stringify(p));
+  copia.id = 'PH' + Date.now().toString().slice(-7);
+  copia.data = new Date().toISOString();
+  copia.status = 'pedido_recebido';
+  copia.pagamentosRecebidos = [];
+  copia.atrasos = [];
+  pedidos.unshift(copia);
+  salvarPedidos();
+  render();
+  showToast('Pedido duplicado! (' + copia.id + ')');
+  setTimeout(() => {
+    const el = document.getElementById('order-' + copia.id);
+    if(el){ el.scrollIntoView({behavior:'smooth'}); el.classList.add('expanded'); }
+  }, 150);
+}
+
+function duplicarItem(idx){
+  const copia = JSON.parse(JSON.stringify(npItensList[idx]));
+  npItensList.splice(idx + 1, 0, copia);
+  renderItens();
+  showToast('Item duplicado');
+}
+
 // ============ NOVO PEDIDO MANUAL ============
 let npItensList = [];
 let npOrigemSel = null;
@@ -2353,7 +2384,10 @@ function renderItens(){
     const temVariacoes = prod && prod.variacoes.length > 0 && !item.custom;
 
     return `<div class="np-item">
-      ${npItensList.length > 1 ? `<button class="np-item-rm" onclick="removerItem(${idx})" aria-label="Remover">×</button>` : ''}
+      <div style="position:absolute;top:8px;right:8px;display:flex;gap:5px">
+        <button title="Duplicar item" onclick="duplicarItem(${idx})" style="background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.2);color:#60a5fa;width:26px;height:26px;border-radius:5px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px" aria-label="Duplicar">⧉</button>
+        ${npItensList.length > 1 ? `<button class="np-item-rm" onclick="removerItem(${idx})" aria-label="Remover">×</button>` : ''}
+      </div>
 
       <span class="np-label" style="margin-bottom:6px">Produto</span>
       <select class="np-select" onchange="selecionarProduto(${idx}, this.value)" style="margin-bottom:8px">
