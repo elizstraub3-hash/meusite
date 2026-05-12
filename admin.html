@@ -408,6 +408,28 @@ header.adm{background:#0a0a0a;border-bottom:1px solid var(--border);padding:14px
 .item-status-sel:focus{border-color:#555}
 .item-wpp-btn{background:rgba(37,211,102,.1);border:1px solid rgba(37,211,102,.2);color:#25d366;border-radius:5px;padding:3px 8px;font-size:.7rem;font-weight:700;cursor:pointer;letter-spacing:.3px;transition:.2s;white-space:nowrap;font-family:inherit}
 .item-wpp-btn:hover{background:rgba(37,211,102,.2)}
+/* ── Atraso ── */
+.atraso-badge-order{display:inline-flex;align-items:center;gap:4px;background:rgba(251,191,36,.12);color:#fbbf24;border:1px solid rgba(251,191,36,.3);border-radius:4px;padding:2px 7px;font-size:9px;font-weight:700;letter-spacing:1px;margin-left:6px;vertical-align:middle;animation:pisca 2s ease-in-out infinite}
+@keyframes pisca{0%,100%{opacity:1}50%{opacity:.5}}
+.atraso-section{background:rgba(251,191,36,.05);border:1px solid rgba(251,191,36,.2);border-radius:8px;padding:12px 14px;margin-top:4px}
+.atraso-section-title{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#fbbf24;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.atraso-item{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid rgba(251,191,36,.08)}
+.atraso-item:last-child{border-bottom:none;padding-bottom:0}
+.atraso-item-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.atraso-item-body{flex:1}
+.atraso-item-motivo{font-size:.82rem;color:#eee;font-weight:600;margin-bottom:2px}
+.atraso-item-obs{font-size:.75rem;color:#888}
+.atraso-item-data{font-size:.7rem;color:#555;white-space:nowrap}
+.atraso-del{background:none;border:none;color:#333;cursor:pointer;font-size:15px;padding:2px 4px;border-radius:3px;transition:.2s}
+.atraso-del:hover{color:#e50914;background:rgba(229,9,20,.1)}
+.atraso-act-btn{padding:5px 14px;border-radius:5px;background:rgba(251,191,36,.12);color:#fbbf24;border:1px solid rgba(251,191,36,.25);font-size:.72rem;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:.3px;transition:.2s}
+.atraso-act-btn:hover{background:rgba(251,191,36,.22)}
+/* Modal atraso */
+.atraso-motivos{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.atraso-motivo-btn{display:flex;align-items:center;gap:8px;padding:10px 12px;background:#111;border:1px solid #222;border-radius:8px;cursor:pointer;font-family:inherit;font-size:.8rem;color:#ccc;text-align:left;transition:.2s}
+.atraso-motivo-btn:hover,.atraso-motivo-btn.sel{background:#1a1a1a;border-color:#fbbf24;color:#fbbf24}
+.atraso-motivo-btn span:first-child{font-size:20px;flex-shrink:0}
+@media(max-width:480px){.atraso-motivos{grid-template-columns:1fr}}
 /* Responsável por item (freelancer) */
 .item-resp-toggle{background:none;border:none;color:#444;font-size:.68rem;font-family:inherit;cursor:pointer;padding:2px 0;letter-spacing:.3px;transition:.2s;text-decoration:underline;text-underline-offset:2px}
 .item-resp-toggle:hover{color:#888}
@@ -831,6 +853,23 @@ header.adm{background:#0a0a0a;border-bottom:1px solid var(--border);padding:14px
       <div id="eqEmpty" class="equipe-empty" style="display:none">
         Nenhum serviço registrado ainda.<br>
         <small style="color:#2a2a2a">Abra um pedido, expanda um item e atribua um freelancer.</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Atraso -->
+  <div class="fin-modal-overlay" id="modalAtraso" style="display:none" onclick="if(event.target===this)fecharModalAtraso()">
+    <div class="fin-modal" style="max-width:480px">
+      <h3>⚠️ Registrar Atraso</h3>
+      <p style="font-size:.8rem;color:#666;margin:-10px 0 16px">Selecione o motivo e, se quiser, envie uma mensagem de desculpas ao cliente via WhatsApp.</p>
+      <label style="margin-bottom:8px;display:block">Motivo do atraso *</label>
+      <div class="atraso-motivos" id="atrasoMotivosGrid"></div>
+      <label>Complemento / Detalhe (opcional)</label>
+      <textarea id="atrasoObs" placeholder="Ex: chuva intensa no bairro, equipamento voltou ao normal..." style="min-height:70px"></textarea>
+      <div class="fin-modal-btns" style="flex-wrap:wrap;gap:8px">
+        <button onclick="fecharModalAtraso()" style="padding:10px 16px;background:#222;color:#aaa;border:1px solid #333;border-radius:7px;cursor:pointer;font-family:inherit">Cancelar</button>
+        <button onclick="salvarAtraso(false)" style="padding:10px 16px;background:#333;color:#fff;border:1px solid #444;border-radius:7px;cursor:pointer;font-family:inherit;font-weight:700">Só registrar</button>
+        <button onclick="salvarAtraso(true)" style="padding:10px 16px;background:#fbbf24;color:#000;border:none;border-radius:7px;cursor:pointer;font-family:inherit;font-weight:700">Registrar + Avisar cliente</button>
       </div>
     </div>
   </div>
@@ -1323,7 +1362,7 @@ function renderLista(){
     <div class="order" id="order-${p.id}">
       <div class="order-header" onclick="toggleOrder('${p.id}')">
         <div class="order-info">
-          <div class="order-id">#${p.id}${p.origem ? `<span class="origem-badge ${ORIGENS[p.origem]?.class || ''}">${ORIGENS[p.origem]?.label || p.origem}</span>` : `<span class="origem-badge origem-site">Site</span>`}</div>
+          <div class="order-id">#${p.id}${p.origem ? `<span class="origem-badge ${ORIGENS[p.origem]?.class || ''}">${ORIGENS[p.origem]?.label || p.origem}</span>` : `<span class="origem-badge origem-site">Site</span>`}${(p.atrasos||[]).some(a=>!a.resolvido) ? `<span class="atraso-badge-order">⚠️ ATRASO</span>` : ''}</div>
           <div class="order-cliente">${cliente.nome || '—'}</div>
           <div class="order-meta">
             <span>${cliente.fone || '—'}</span>
@@ -1461,6 +1500,32 @@ function renderLista(){
             </div>
           </div>`;
         })()}
+
+        <div class="body-section">
+          <div class="atraso-section">
+            <div class="atraso-section-title">
+              ⚠️ Atrasos / Imprevistos
+              <button class="atraso-act-btn" style="margin-left:auto" onclick="abrirModalAtraso('${p.id}')">+ Registrar atraso</button>
+            </div>
+            ${(() => {
+              const atrasos = p.atrasos || [];
+              if(!atrasos.length) return `<div style="font-size:.78rem;color:#444;text-align:center;padding:6px 0">Nenhum imprevisto registrado neste pedido.</div>`;
+              return atrasos.map(a => {
+                const d = new Date(a.data + 'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit'});
+                return `<div class="atraso-item">
+                  <span class="atraso-item-icon">${a.emoji}</span>
+                  <div class="atraso-item-body">
+                    <div class="atraso-item-motivo">${escHtml(a.motivo)}${a.resolvido ? ' <span style="color:#4ade80;font-size:.7rem">✓ Resolvido</span>' : ''}</div>
+                    ${a.obs ? `<div class="atraso-item-obs">${escHtml(a.obs)}</div>` : ''}
+                  </div>
+                  <span class="atraso-item-data">${d}</span>
+                  ${!a.resolvido ? `<button class="atraso-act-btn" style="font-size:.65rem;padding:3px 8px" onclick="resolverAtraso('${p.id}','${a.id}')">Resolver</button>` : ''}
+                  <button class="atraso-del" onclick="excluirAtraso('${p.id}','${a.id}')" title="Excluir">×</button>
+                </div>`;
+              }).join('');
+            })()}
+          </div>
+        </div>
 
         ${p.observacoes ? `<div class="body-section">
           <div class="body-label">Observações Internas</div>
@@ -2874,6 +2939,104 @@ setInterval(() => {
     }
   }
 }, 5000);
+
+// ============ ATRASOS / IMPREVISTOS ============
+const ATRASO_MOTIVOS = [
+  {emoji:'🌧️', label:'Chuva / Condições climáticas'},
+  {emoji:'⚙️', label:'Falha técnica no equipamento'},
+  {emoji:'🖨️', label:'Erro de impressão'},
+  {emoji:'📦', label:'Atraso na entrega de material'},
+  {emoji:'🔌', label:'Queda de energia'},
+  {emoji:'🚚', label:'Problema com transportadora'},
+  {emoji:'👤', label:'Ausência de colaborador'},
+  {emoji:'⏳', label:'Alta demanda / Fila de produção'},
+  {emoji:'🔧', label:'Manutenção do equipamento'},
+  {emoji:'❓', label:'Outro imprevisto'},
+];
+
+let _atrasoPedidoId = null;
+let _atrasoMotivoSel = null;
+
+function abrirModalAtraso(pedidoId){
+  _atrasoPedidoId = pedidoId;
+  _atrasoMotivoSel = null;
+  document.getElementById('atrasoObs').value = '';
+  const grid = document.getElementById('atrasoMotivosGrid');
+  grid.innerHTML = ATRASO_MOTIVOS.map((m, i) =>
+    `<button class="atraso-motivo-btn" id="am-${i}" onclick="selecionarMotivoAtraso(${i})">
+      <span>${m.emoji}</span><span>${m.label}</span>
+    </button>`
+  ).join('');
+  document.getElementById('modalAtraso').style.display = 'flex';
+}
+
+function fecharModalAtraso(){
+  document.getElementById('modalAtraso').style.display = 'none';
+  _atrasoPedidoId = null;
+  _atrasoMotivoSel = null;
+}
+
+function selecionarMotivoAtraso(idx){
+  _atrasoMotivoSel = idx;
+  document.querySelectorAll('.atraso-motivo-btn').forEach((b,i) =>
+    b.classList.toggle('sel', i === idx)
+  );
+}
+
+function salvarAtraso(enviarWpp){
+  if(_atrasoMotivoSel === null){ alert('Selecione o motivo do atraso'); return; }
+  const p = pedidos.find(x => x.id === _atrasoPedidoId);
+  if(!p) return;
+  const motivo = ATRASO_MOTIVOS[_atrasoMotivoSel];
+  const obs = document.getElementById('atrasoObs').value.trim();
+  if(!p.atrasos) p.atrasos = [];
+  const atraso = {
+    id: 'AT' + Date.now(),
+    emoji: motivo.emoji,
+    motivo: motivo.label,
+    obs,
+    data: new Date().toISOString().slice(0,10),
+    resolvido: false
+  };
+  p.atrasos.push(atraso);
+  salvarPedidos();
+  fecharModalAtraso();
+  render();
+  if(_abaAtiva === 'dashboard') renderDashboard();
+  showToast('Atraso registrado!');
+  if(enviarWpp){
+    const fone = p.cliente.fone.replace(/\D/g,'');
+    const foneFinal = fone.startsWith('55') ? fone : '55' + fone;
+    const msg = _msgAtraso(p, atraso);
+    window.open(`https://wa.me/${foneFinal}?text=${encodeURIComponent(msg)}`, '_blank');
+  }
+}
+
+function _msgAtraso(p, a){
+  const _SEP2 = '━━━━━━━━━━━━━━━';
+  const obs = a.obs ? `\n\n📝 ${a.obs}` : '';
+  return `Olá, ${p.cliente.nome}! 🙏\n\nGostaríamos de te informar sobre uma atualização no seu pedido *#${p.id}*.\n\n${_SEP2}\n\n⚠️ *Aviso de Atraso*\n\n${a.emoji} *Motivo:* ${a.motivo}${obs}\n\n${_SEP2}\n\nEstamos trabalhando para resolver o mais rápido possível e garantir a entrega com a mesma qualidade de sempre.\n\nPedimos desculpas pelo transtorno e agradecemos a sua compreensão! 💛\n\n✨ Print House Gráfica Online`;
+}
+
+function resolverAtraso(pedidoId, atrasoId){
+  const p = pedidos.find(x => x.id === pedidoId);
+  if(!p) return;
+  const a = (p.atrasos||[]).find(x => x.id === atrasoId);
+  if(a) a.resolvido = true;
+  salvarPedidos();
+  render();
+  showToast('Atraso marcado como resolvido ✓');
+}
+
+function excluirAtraso(pedidoId, atrasoId){
+  if(!confirm('Excluir este registro de atraso?')) return;
+  const p = pedidos.find(x => x.id === pedidoId);
+  if(!p) return;
+  p.atrasos = (p.atrasos||[]).filter(x => x.id !== atrasoId);
+  salvarPedidos();
+  render();
+  showToast('Atraso removido');
+}
 
 // ============ EQUIPE / FREELANCERS ============
 function getFreelancerNomes(){
