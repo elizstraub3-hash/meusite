@@ -690,6 +690,7 @@ footer{background:#0a0a0a;border-top:1px solid var(--border);padding:50px 4% 26p
  <button class="cat-btn maes-btn" onclick="filterCat(this,'maes')">Dia das Mães</button>
  <button class="cat-btn junina-btn" onclick="filterCat(this,'festaJunina')">Festa Junina</button>
  <button class="cat-btn copa-btn" onclick="filterCat(this,'copa2026')">Copa 2026</button>
+ <button class="cat-btn" onclick="filterCat(this,'textil')">Têxtil</button>
  <button class="cat-btn" onclick="filterCat(this,'insumos')">Insumos</button>
  </div>
 </nav>
@@ -923,6 +924,18 @@ footer{background:#0a0a0a;border-top:1px solid var(--border);padding:50px 4% 26p
  <button class="carousel-arrow left" onclick="scrollCarousel('cmaes',-1)"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg></button>
  <div class="carousel" id="cmaes"></div>
  <button class="carousel-arrow right" onclick="scrollCarousel('cmaes',1)"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg></button>
+ </div>
+</section>
+
+<section class="row" id="row-textil">
+ <div class="row-header">
+ <h2 class="row-title">Têxtil <span>Personalizado</span></h2>
+ <a class="row-link" href="#" onclick="filterCat(null,'textil');window.scrollTo({top:0,behavior:'smooth'});return false">Ver todos</a>
+ </div>
+ <div class="carousel-wrap">
+ <button class="carousel-arrow left" onclick="scrollCarousel('ctextil',-1)"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg></button>
+ <div class="carousel" id="ctextil"></div>
+ <button class="carousel-arrow right" onclick="scrollCarousel('ctextil',1)"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg></button>
  </div>
 </section>
 
@@ -1809,6 +1822,11 @@ const produtos = [
  precoBase:'R$ 39,90',
  variacoes:[]
  }
+,{id:'toalha-praia', prazo:'6 dias úteis', cat:'textil', thumb:'TOALHA', img:'toalha-praia.png', badge:'NOVO',
+ nome:'Toalha de Praia Personalizada 65×135 cm',
+ desc:'Toalha de praia personalizada em tecido Atoalhado Poliéster 290g, tamanho 65×135 cm. Impressão sublimática de alta qualidade com cores vibrantes e duradouras. Ideal para brindes, resorts, eventos e uso pessoal. Arte enviada pelo cliente.',
+ badges:['Atoalhado Poliéster 290g','Tamanho 65×135 cm','Impressão sublimática','Personalização exclusiva'],
+ variacoes:[{nome:'Quantidade', opcoes:[{label:'1 unidade', preco:49.90},{label:'5 unidades', preco:234.50},{label:'10 unidades', preco:449.00},{label:'25 unidades', preco:1097.50}]}]}
 
 ];
 
@@ -1862,7 +1880,7 @@ function makeCard(p){
 }
 
 function makeVerMaisCard(cat){
- const labels = {impressao:'Impressão',personalizado:'Personalizado',sacolas:'Sacolas',papelaria:'Papelaria Personalizada',laser:'Gravação a Laser',digital:'Serviços Digitais',insumos:'Insumos',maes:'Dia das Mães',festaJunina:'Festa Junina 2026',copa2026:'Copa 2026'};
+ const labels = {impressao:'Impressão',personalizado:'Personalizado',sacolas:'Sacolas',papelaria:'Papelaria Personalizada',laser:'Gravação a Laser',digital:'Serviços Digitais',insumos:'Insumos',maes:'Dia das Mães',festaJunina:'Festa Junina 2026',copa2026:'Copa 2026',textil:'Têxtil Personalizado'};
  const label = labels[cat] || cat;
  return `<div class="card card-ver-mais" onclick="filterCat(null,'${cat}');window.scrollTo({top:0,behavior:'smooth'})">
  <div class="card-img" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px">
@@ -1890,6 +1908,7 @@ function renderCarousels(){
  csacolas: {list: produtos.filter(p => p.cat === 'sacolas'), cat: 'sacolas'},
  cpapelaria: {list: produtos.filter(p => p.cat === 'papelaria'), cat: 'papelaria'},
  claser: {list: produtos.filter(p => p.cat === 'laser'), cat: 'laser'},
+ ctextil: {list: produtos.filter(p => p.cat === 'textil'), cat: 'textil'},
  };
 
  function makeTop10Card(p, rank){
@@ -1942,7 +1961,7 @@ function filterCat(btn, cat){
  } else {
  rows.forEach(r => r.style.display = 'none');
  const list = produtos.filter(p => p.cat === cat);
- const labels = {impressao:'Impressão',personalizado:'Personalizado',sacolas:'Sacolas',papelaria:'Papelaria Personalizada',laser:'Gravação a Laser',digital:'Serviços Digitais',insumos:'Insumos',maes:'Dia das Mães',festaJunina:'Festa Junina 2026',copa2026:'Copa 2026'};
+ const labels = {impressao:'Impressão',personalizado:'Personalizado',sacolas:'Sacolas',papelaria:'Papelaria Personalizada',laser:'Gravação a Laser',digital:'Serviços Digitais',insumos:'Insumos',maes:'Dia das Mães',festaJunina:'Festa Junina 2026',copa2026:'Copa 2026',textil:'Têxtil Personalizado'};
  document.getElementById('catPageTitle').textContent = labels[cat] || cat;
  const banner = document.getElementById('catPageBanner');
  if(cat === 'copa2026'){
